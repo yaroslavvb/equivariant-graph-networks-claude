@@ -1,0 +1,13 @@
+[project]
+name = "equivariant-graph-networks"
+version = "0.1.0"
+description = "Toy experiments behind the NequIP genealogy report: E(3)-equivariant features, conservative forces, and the convex-hull decision problem."
+requires-python = ">=3.12"
+dependencies = [
+    "numpy>=2.0",
+    "scipy>=1.14",
+    "matplotlib>=3.9",
+]
+
+[tool.uv]
+package = false

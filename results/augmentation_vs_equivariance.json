@@ -1,0 +1,675 @@
+{
+ "meta": {
+  "seed": 20260729,
+  "description": "Built-in rotation invariance versus rotation learned from augmentation: test error, invariance error eps(g), and an off-distribution probe with restricted augmentation.",
+  "n_neighbors": 6,
+  "energy_mean": -0.7539058785860041,
+  "energy_std": 0.4289324080327023,
+  "median_pairwise_distance": 5.0965352901843355,
+  "n_val": 200,
+  "n_test": 400,
+  "n_inv_conf": 100,
+  "n_inv_rot": 32,
+  "small_angle_deg": 14.999999999999998,
+  "ridge_lambdas": [
+   1e-06,
+   3.162277660168379e-06,
+   1e-05,
+   3.1622776601683795e-05,
+   0.0001,
+   0.00031622776601683794,
+   0.001,
+   0.0031622776601683794,
+   0.01,
+   0.03162277660168379,
+   0.1,
+   0.31622776601683794,
+   1.0,
+   3.1622776601683795,
+   10.0,
+   31.622776601683793,
+   100.0,
+   316.22776601683796,
+   1000.0
+  ],
+  "sigma_scales": [
+   0.5,
+   1.0,
+   2.0
+  ],
+  "potential": {
+   "r_cut": 2.6,
+   "morse_a": 1.6,
+   "morse_r0": 1.1,
+   "lambda3": 1.2,
+   "r_min": 0.85,
+   "r_max": 2.3
+  },
+  "radial_basis": {
+   "n_rad": 8,
+   "mu": [
+    0.7,
+    0.9428571428571428,
+    1.1857142857142857,
+    1.4285714285714284,
+    1.6714285714285713,
+    1.9142857142857141,
+    2.157142857142857,
+    2.4
+   ],
+   "sigma": 0.24285714285714288,
+   "l_max": 3
+  }
+ },
+ "builtin": {
+  "n_train": [
+   50,
+   100,
+   200,
+   400,
+   800
+  ],
+  "n_features": 152,
+  "nrmse_canonical": [
+   0.16688836246404892,
+   0.04086354780429515,
+   0.0069089803722268885,
+   0.005417532250786503,
+   0.004234934076589763
+  ],
+  "nrmse_rotated": [
+   0.1668883624640489,
+   0.04086354780429515,
+   0.006908980372226912,
+   0.005417532250786607,
+   0.0042349340765898795
+  ],
+  "inv_err_mean": [
+   3.9775184833282424e-16,
+   4.1608169919418784e-16,
+   4.370075115915785e-16,
+   4.616875722128363e-16,
+   4.521798862928827e-16
+  ],
+  "inv_err_max": [
+   2.5359727713532593e-15,
+   3.4901436243451035e-15,
+   3.588713677915684e-15,
+   3.887439356622431e-15,
+   4.660110387088691e-15
+  ],
+  "lambda": [
+   1e-06,
+   3.1622776601683795e-05,
+   1e-06,
+   1e-06,
+   1e-06
+  ]
+ },
+ "augmented": {
+  "n_train": [
+   50,
+   100,
+   200,
+   400,
+   800
+  ],
+  "K": [
+   1,
+   4,
+   16,
+   64,
+   256
+  ],
+  "n_features": 384,
+  "nrmse_canonical": [
+   [
+    0.9557114323341168,
+    1.0071102205782119,
+    1.0006777389940493,
+    1.0157316775735263,
+    1.00561448466564
+   ],
+   [
+    0.9021461186955432,
+    1.0108313563347626,
+    0.9008794934556841,
+    0.8810561137880077,
+    0.8677116186807926
+   ],
+   [
+    0.8177973330814372,
+    0.8921265475723213,
+    0.8532397861978126,
+    0.8253747656026654,
+    0.8447773211605495
+   ],
+   [
+    0.7877779806829334,
+    0.8261947720822473,
+    0.7902701757987166,
+    0.8094487583185707,
+    0.8113132343301169
+   ],
+   [
+    0.732343013360743,
+    0.7802054758764748,
+    0.8184223818740333,
+    0.8141768658925407,
+    0.802802848289641
+   ]
+  ],
+  "nrmse_rotated": [
+   [
+    1.2030428873036345,
+    1.0306079271946167,
+    1.0059310725657404,
+    0.9323846542188527,
+    0.9464022678015916
+   ],
+   [
+    1.3191807246171312,
+    1.0116331066779813,
+    0.8488706935770918,
+    0.8372259108554971,
+    0.8453987511560905
+   ],
+   [
+    1.3847998903592649,
+    0.9671860244171384,
+    0.8654716440179299,
+    0.8300411671867162,
+    0.8350859540398556
+   ],
+   [
+    1.6067308830319702,
+    1.1188455796876131,
+    0.8293410031724319,
+    0.8131623574892369,
+    0.8165162041296488
+   ],
+   [
+    3.0378324637320957,
+    0.8211993998312707,
+    0.7599974128460024,
+    0.8033990407516824,
+    0.804068335970683
+   ]
+  ],
+  "inv_err_mean": [
+   [
+    0.3251899353899978,
+    0.07995171110148944,
+    0.1134855515183549,
+    0.20460490751510946,
+    0.21340523480083237
+   ],
+   [
+    0.4788150240693586,
+    0.0024787685805432768,
+    0.24477487943891174,
+    0.18477929162729392,
+    0.16024470427115234
+   ],
+   [
+    0.5393074573404003,
+    0.3728744718411495,
+    0.22652541390220626,
+    0.15370971965425964,
+    0.13945097089878683
+   ],
+   [
+    0.7345314097624722,
+    0.33451941798356344,
+    0.2215235578630166,
+    0.13038558395182942,
+    0.11880239219785022
+   ],
+   [
+    1.3642223169557042,
+    0.292184962058288,
+    0.19136402494302512,
+    0.12372767962874645,
+    0.11541001950779034
+   ]
+  ],
+  "inv_err_max": [
+   [
+    1.60382556134421,
+    0.3726484398048956,
+    0.7312102802332809,
+    1.325802532410726,
+    1.4398849995222025
+   ],
+   [
+    2.0830570394646704,
+    0.011701027905406879,
+    1.4702521442358618,
+    1.0259548825680196,
+    1.198765143661434
+   ],
+   [
+    3.0429067683807496,
+    1.6645526157158714,
+    1.3235979319810756,
+    0.948204660637872,
+    0.9525375986105564
+   ],
+   [
+    4.610504273433446,
+    1.6826194050424055,
+    1.3607248404143364,
+    0.7108032952782112,
+    0.8188604721360745
+   ],
+   [
+    7.225399656984598,
+    1.596496441670226,
+    1.6657430904240014,
+    0.9196233079506354,
+    0.7037215275130048
+   ]
+  ],
+  "lambda": [
+   [
+    31.622776601683793,
+    31.622776601683793,
+    10.0,
+    0.03162277660168379,
+    0.03162277660168379
+   ],
+   [
+    3.1622776601683795,
+    1000.0,
+    0.01,
+    0.01,
+    0.01
+   ],
+   [
+    1.0,
+    0.1,
+    0.001,
+    0.001,
+    0.00031622776601683794
+   ],
+   [
+    0.1,
+    0.31622776601683794,
+    0.001,
+    0.0001,
+    1e-06
+   ],
+   [
+    0.0031622776601683794,
+    0.01,
+    1e-05,
+    3.1622776601683795e-05,
+    1e-06
+   ]
+  ],
+  "sigma_scale": [
+   [
+    2.0,
+    0.5,
+    0.5,
+    2.0,
+    2.0
+   ],
+   [
+    1.0,
+    0.5,
+    2.0,
+    2.0,
+    2.0
+   ],
+   [
+    1.0,
+    1.0,
+    2.0,
+    2.0,
+    2.0
+   ],
+   [
+    1.0,
+    1.0,
+    2.0,
+    2.0,
+    2.0
+   ],
+   [
+    2.0,
+    2.0,
+    2.0,
+    2.0,
+    2.0
+   ]
+  ],
+  "n_rows": [
+   [
+    50,
+    200,
+    800,
+    3200,
+    12800
+   ],
+   [
+    100,
+    400,
+    1600,
+    6400,
+    25600
+   ],
+   [
+    200,
+    800,
+    3200,
+    12800,
+    51200
+   ],
+   [
+    400,
+    1600,
+    6400,
+    25600,
+    102400
+   ],
+   [
+    800,
+    3200,
+    12800,
+    51200,
+    204800
+   ]
+  ],
+  "near_trivial": [
+   [
+    true,
+    true,
+    true,
+    true,
+    true
+   ],
+   [
+    true,
+    true,
+    false,
+    false,
+    false
+   ],
+   [
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   [
+    false,
+    false,
+    false,
+    false,
+    false
+   ],
+   [
+    false,
+    false,
+    false,
+    false,
+    false
+   ]
+  ],
+  "min_inv_err_any": 0.0024787685805432768,
+  "min_inv_err_nontrivial": 0.11541001950779034,
+  "trivial_note": "near_trivial marks fits whose nRMSE exceeds 0.9 in both orientations, i.e. within 10% of just predicting the mean. Such fits are near-constant and therefore invariant for a trivial reason; min_inv_err_any is attained at one of them (n=100, K=4, nRMSE 1.01) and min_inv_err_nontrivial is the honest best invariance actually achieved by a model that learned the target."
+ },
+ "offdist_probe": {
+  "n_train": 800,
+  "K": 256,
+  "families": [
+   "full",
+   "zaxis",
+   "smallangle"
+  ],
+  "inv_err_mean": {
+   "full": {
+    "full": 0.11729997644149946,
+    "zaxis": 0.09976034260727548,
+    "smallangle": 0.017636041762220604
+   },
+   "zaxis": {
+    "full": 1.3690873774859278,
+    "zaxis": 0.09073207863247865,
+    "smallangle": 0.1012810377392411
+   },
+   "smallangle": {
+    "full": 0.9857435928308995,
+    "zaxis": 0.20766748253760972,
+    "smallangle": 0.05540062773043864
+   }
+  },
+  "inv_err_max": {
+   "full": {
+    "full": 0.7283346376592253,
+    "zaxis": 0.7111315082530894,
+    "smallangle": 0.21995254465367517
+   },
+   "zaxis": {
+    "full": 9.398714328325063,
+    "zaxis": 0.5429249481769334,
+    "smallangle": 1.065690665275941
+   },
+   "smallangle": {
+    "full": 6.346922368526152,
+    "zaxis": 1.0331027033369133,
+    "smallangle": 0.5392755428205482
+   }
+  },
+  "nrmse_canonical": {
+   "full": 0.802802848289641,
+   "zaxis": 0.6876662828822979,
+   "smallangle": 0.720252925464277
+  },
+  "nrmse_rotated": {
+   "full": 0.804068335970683,
+   "zaxis": 2.329290067339695,
+   "smallangle": 2.120730867946523
+  }
+ },
+ "augmentation_tax": {
+  "per_n_train": {
+   "50": {
+    "rotation_free_ceiling": 0.9557114323341168,
+    "ceiling_is_near_trivial": true,
+    "min_K_to_reach_ceiling": 64,
+    "min_rows_to_reach_ceiling": 3200,
+    "best_rotated_nrmse": 0.9323846542188527,
+    "shortfall_ratio": 0.9755922370225356
+   },
+   "100": {
+    "rotation_free_ceiling": 0.9021461186955432,
+    "ceiling_is_near_trivial": true,
+    "min_K_to_reach_ceiling": 16,
+    "min_rows_to_reach_ceiling": 1600,
+    "best_rotated_nrmse": 0.8372259108554971,
+    "shortfall_ratio": 0.9280380345326793
+   },
+   "200": {
+    "rotation_free_ceiling": 0.8177973330814372,
+    "ceiling_is_near_trivial": false,
+    "min_K_to_reach_ceiling": null,
+    "min_rows_to_reach_ceiling": null,
+    "best_rotated_nrmse": 0.8300411671867162,
+    "shortfall_ratio": 1.014971721733482
+   },
+   "400": {
+    "rotation_free_ceiling": 0.7877779806829334,
+    "ceiling_is_near_trivial": false,
+    "min_K_to_reach_ceiling": null,
+    "min_rows_to_reach_ceiling": null,
+    "best_rotated_nrmse": 0.8131623574892369,
+    "shortfall_ratio": 1.0322227549242968
+   },
+   "800": {
+    "rotation_free_ceiling": 0.732343013360743,
+    "ceiling_is_near_trivial": false,
+    "min_K_to_reach_ceiling": null,
+    "min_rows_to_reach_ceiling": null,
+    "best_rotated_nrmse": 0.7599974128460024,
+    "shortfall_ratio": 1.037761539307042
+   }
+  },
+  "informative_n_train": [
+   200,
+   400,
+   800
+  ],
+  "informative_note": "At n_train <= 100 the rotation-free ceiling is itself close to the mean predictor, so 'augmentation beats its own ceiling' there compares two near-trivial fits and should not be read as regularisation benefit. informative_n_train lists the sizes where the ceiling is a real fit.",
+  "vs_builtin": {
+   "nrmse_canonical": {
+    "builtin_target": 0.004234934076589763,
+    "min_augmented_rows_to_match": null,
+    "best_unconstrained_anywhere": 0.732343013360743,
+    "ratio_best_unconstrained_over_builtin": 172.92902324242834
+   },
+   "nrmse_rotated": {
+    "builtin_target": 0.0042349340765898795,
+    "min_augmented_rows_to_match": null,
+    "best_unconstrained_anywhere": 0.7599974128460024,
+    "ratio_best_unconstrained_over_builtin": 179.45908935092078
+   },
+   "rotation_free_gap_ratio": 172.92902324242834,
+   "note": "The unconstrained-vs-builtin ratio is NOT the augmentation tax: with rotation removed from the problem entirely (K=1, canonical train and test) the unconstrained model is still 173x worse. See per_n_train for the rotation-isolated tax."
+  }
+ },
+ "controls": {
+  "feature_invariance_worst_rel": 1.5801174278693648e-15,
+  "ground_truth_invariance_worst_abs": 1.7763568394002505e-15,
+  "canonicalization_energy_worst_abs": 2.220446049250313e-15,
+  "canonical_frame_worst_coord_dev": 1.9984014443252818e-15,
+  "exact_kernel_ridge_nrmse": 0.7001261138060194,
+  "rff_nrmse_same_setting": 0.732343013360743,
+  "rff_excess_over_kernel_limit": 0.046015851886435755
+ },
+ "checks": [
+  {
+   "name": "ground truth energy invariant under rotation",
+   "passed": true,
+   "detail": "max |E(gx)-E(x)| 1.78e-15"
+  },
+  {
+   "name": "canonicalisation leaves the energy unchanged",
+   "passed": true,
+   "detail": "max |E(canon(gx))-E(x)| 2.22e-15"
+  },
+  {
+   "name": "canonical frame commutes with rotation: canon(gx) = canon(x)",
+   "passed": true,
+   "detail": "max coord dev 2.00e-15"
+  },
+  {
+   "name": "power-spectrum features invariant to float precision",
+   "passed": true,
+   "detail": "max relative dev 1.58e-15"
+  },
+  {
+   "name": "built-in model eps(g) at machine precision",
+   "passed": true,
+   "detail": "mean eps 4.52e-16, worst 4.66e-15"
+  },
+  {
+   "name": "built-in model canonical and rotated test error agree",
+   "passed": true,
+   "detail": "|diff| 1.16e-16"
+  },
+  {
+   "name": "built-in test error falls with training size",
+   "passed": true,
+   "detail": "nRMSE 0.1669 at n=50 -> 0.0042 at n=800"
+  },
+  {
+   "name": "eps(g) drops by >3x from K=1 to K=64",
+   "passed": true,
+   "detail": "mean eps 1.364e+00 (K=1) -> 1.237e-01 (K=64), ratio 11.0x"
+  },
+  {
+   "name": "eps(g) monotonically non-increasing in K at largest n_train",
+   "passed": true,
+   "detail": "eps over K=[1, 4, 16, 64, 256]: 1.364e+00, 2.922e-01, 1.914e-01, 1.237e-01, 1.154e-01"
+  },
+  {
+   "name": "augmented eps(g) never gets within 1e-6, even counting collapsed fits",
+   "passed": true,
+   "detail": "best mean eps anywhere 2.479e-03 vs built-in 4.52e-16"
+  },
+  {
+   "name": "excluding fits that collapsed to the mean, best augmented eps is >1e-2",
+   "passed": true,
+   "detail": "best non-trivial mean eps 1.154e-01 (2.6e+14x the built-in model); the global min 2.479e-03 belongs to a near-constant fit at n=100, K=4 with nRMSE 1.01"
+  },
+  {
+   "name": "z-only augmentation: eps under general g >>10x eps under z-rotations",
+   "passed": true,
+   "detail": "eps_general 1.369e+00 vs eps_z 9.073e-02, ratio 15.1x"
+  },
+  {
+   "name": "15-degree augmentation: eps under general g >>10x eps in-range",
+   "passed": true,
+   "detail": "eps_general 9.857e-01 vs eps_small 5.540e-02, ratio 17.8x"
+  },
+  {
+   "name": "full augmentation shows no such orbit preference (ratio <5x)",
+   "passed": true,
+   "detail": "eps_general 1.173e-01 vs eps_z 9.976e-02, ratio 1.18x"
+  },
+  {
+   "name": "z-only augmentation is far worse than full on rotated test data",
+   "passed": true,
+   "detail": "nRMSE_rot 2.3293 (z-only) vs 0.8041 (full)"
+  },
+  {
+   "name": "augmentation helps on the rotated test set, K=256 beats K=1",
+   "passed": true,
+   "detail": "rotated nRMSE 3.0378 (K=1) -> 0.8041 (K=256)"
+  },
+  {
+   "name": "NEGATIVE RESULT (expected): augmentation degrades canonical-orientation accuracy, best at K=1",
+   "passed": true,
+   "detail": "canonical nRMSE over K=[1, 4, 16, 64, 256]: 0.7323, 0.7802, 0.8184, 0.8142, 0.8028"
+  },
+  {
+   "name": "unconstrained model is not capacity-limited: within 15% of exact Gaussian kernel ridge",
+   "passed": true,
+   "detail": "RFF nRMSE 0.7323 vs exact-kernel limit 0.7001, excess 4.6%"
+  },
+  {
+   "name": "built-in beats every unconstrained model on rotated test error",
+   "passed": true,
+   "detail": "built-in nRMSE 0.0042, best unconstrained 0.7600 (179.5x worse); no (n,K) in the sweep matches it"
+  },
+  {
+   "name": "HONESTY CONTROL: that gap is a representation gap, not a rotation tax -- it survives with rotation removed entirely",
+   "passed": true,
+   "detail": "K=1 canonical train+test still 173x worse than built-in (0.7323 vs 0.0042)"
+  },
+  {
+   "name": "CONCEDED: measured in accuracy the rotation tax is nearly zero (shortfall <1.10x everywhere)",
+   "passed": true,
+   "detail": "shortfall (best rotated / rotation-free ceiling) at n_train=[50, 100, 200, 400, 800]: 0.976x, 0.928x, 1.015x, 1.032x, 1.038x"
+  },
+  {
+   "name": "where the ceiling is a real fit, augmentation never quite reaches it, falling short by 1-5%",
+   "passed": true,
+   "detail": "informative n_train [200, 400, 800]: 1.015x, 1.032x, 1.038x"
+  },
+  {
+   "name": "CAVEAT: the two sub-ceiling points are near-trivial fits, not a regularisation win",
+   "passed": true,
+   "detail": "ceilings at n_train<=100 are 0.956, 0.902 nRMSE, i.e. above the 0.9 mean-predictor threshold"
+  },
+  {
+   "name": "at n=800, K=256: accuracy within 10% of ceiling while invariance error is >1e10x the built-in model",
+   "passed": true,
+   "detail": "accuracy shortfall 1.038x, but mean eps 1.154e-01 vs 4.52e-16 = 2.6e+14x"
+  }
+ ]
+}

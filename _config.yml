@@ -1,0 +1,20 @@
+title: equivariant-graph-networks
+description: >-
+  The genealogy of E(3)-equivariant interatomic potentials, from Behler-Parrinello
+  through NequIP (Nat. Commun. 13, 2453) to the current Matbench Discovery leaders --
+  with a clickable tutorial whose every number is computed in the browser or by a
+  verified Python script.
+theme: jekyll-theme-cayman
+
+# GitHub Pages enables jekyll-optional-front-matter, jekyll-relative-links,
+# jekyll-readme-index, jekyll-default-layout and jekyll-titles-from-headings by
+# default, which is what renders reports/*.md (no front matter) as HTML pages
+# with working inter-report links.
+
+exclude:
+  - .venv
+  - uv.lock
+  - pyproject.toml
+  - .python-version
+  - .claude
+  - python/__pycache__

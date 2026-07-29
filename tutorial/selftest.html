@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Browser self-test — O(3) representation theory</title>
+<link rel="stylesheet" href="css/tutorial.css">
+</head>
+<body>
+<div class="wrap" style="padding-top:34px">
+  <p class="eyebrow geo">Verification</p>
+  <h1>The browser checks its own representation theory</h1>
+  <p class="lede">Everything the tutorial needs — real spherical harmonics, Wigner
+  matrices, Clebsch–Gordan couplings — is derived here rather than tabulated. This
+  page runs the same assertions as <code>python/e3.py</code>, in JavaScript, right now.</p>
+
+  <div class="demo">
+    <h3>Live checks</h3>
+    <p class="hint">Harmonics are compared against values exported from scipy by
+    <code>python/experiments/export_js_reference.py</code>; the rest is checked
+    against the property that defines it.</p>
+    <div id="out" class="readout">running…</div>
+  </div>
+
+  <p><a href="index.html">← back to the tutorial</a></p>
+</div>
+
+<script type="module">
+import { selfTest } from './js/e3.js';
+
+const out = document.getElementById('out');
+(async () => {
+  let reference = null;
+  let refNote = '';
+  try {
+    const r = await fetch('../results/sh_reference.json');
+    if (r.ok) reference = await r.json();
+    else refNote = `\n(scipy reference not reachable: HTTP ${r.status} — skipping that check)\n`;
+  } catch (e) {
+    refNote = `\n(scipy reference not reachable: ${e.message} — skipping that check)\n`;
+  }
+
+  const t0 = performance.now();
+  const results = selfTest(reference);
+  const ms = performance.now() - t0;
+
+  const pass = results.filter((r) => r.pass).length;
+  const lines = results.map((r) =>
+    `<span class="${r.pass ? 'ok' : 'bad'}">[${r.pass ? 'PASS' : 'FAIL'}]</span> ${r.name}` +
+    (r.detail ? `  <span class="dim">${r.detail}</span>` : ''));
+  out.innerHTML = refNote + lines.join('\n') +
+    `\n${'-'.repeat(60)}\n<span class="${pass === results.length ? 'ok' : 'bad'}">` +
+    `${pass}/${results.length} PASS</span>  <span class="dim">(${ms.toFixed(0)} ms)</span>`;
+})();
+</script>
+</body>
+</html>

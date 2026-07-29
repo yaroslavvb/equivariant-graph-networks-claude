@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Why the leaderboard is equivariant — a clickable tutorial</title>
+<meta name="description" content="An interactive tutorial on E(3)-equivariant interatomic potentials: from NequIP's tensor features to the models at the top of Matbench Discovery. Every number computed live in the browser.">
+<link rel="stylesheet" href="css/tutorial.css">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+  chtml: { scale: 0.95 },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
+</head>
+<body>
+<button id="menuBtn" type="button" aria-label="Toggle contents">☰ Contents</button>
+<div id="shell">
+  <nav id="toc">
+    <h2>Chapters</h2>
+    <ol id="tocList"></ol>
+    <div id="tocFoot">
+      <p style="margin:0 0 8px"><strong>Every number on these pages is computed
+      in your browser</strong> or read from a JSON file written by a Python script
+      in this repository — nothing is transcribed by hand.</p>
+      <p style="margin:0"><a href="../">Repository &amp; written report</a></p>
+    </div>
+  </nav>
+  <div id="main"><div class="wrap"><div id="stage"></div></div></div>
+</div>
+<noscript>
+  <div class="wrap"><div class="note dat" style="margin-top:40px">
+    <span class="tag">JavaScript required</span>
+    This tutorial computes its figures live — spherical harmonics, Wigner matrices,
+    Clebsch–Gordan couplings, regressions and molecular dynamics all run in the page.
+    With scripting disabled there is nothing to show. The written report in the
+    repository covers the same material as prose.
+  </div></div>
+</noscript>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
