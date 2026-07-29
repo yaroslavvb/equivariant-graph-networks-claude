@@ -214,7 +214,8 @@ export class Plot {
       if (!s.label) continue;
       box.appendChild(h('span', { class: 'ctl', style: { fontSize: '13px' } },
         h('span', { style: { display: 'inline-block', width: '14px', height: '3px',
-          borderRadius: '2px', background: s.color || '#1F4E79' } }),
+          borderRadius: '2px', background: s.color || '#1F4E79',
+          opacity: String(s.opacity ?? 1) } }),
         h('span', { style: { color: '#5A6773' } }, s.label)));
     }
     return box;

@@ -49,18 +49,18 @@ export default {
         'rotate with it. Those are two different requirements, and the difference between them is ' +
         'the whole architectural argument.'),
 
-      h('p', { class: 'prose' },
+      h('p', { class: 'prose', html:
         'Write $g$ for a rigid motion — a rotation, a reflection, a translation, or any ' +
         'composition of them. A function $f$ from atomic positions to some output is ' +
-        'called <em>equivariant</em> when'),
+        'called <em>equivariant</em> when' }),
       h('div', { class: 'prose', style: { textAlign: 'center', margin: '1.1em 0' } },
         '$$f\\bigl(\\rho_{\\text{in}}(g)\\,x\\bigr) \\;=\\; \\rho_{\\text{out}}(g)\\,f(x)$$'),
-      h('p', { class: 'prose' },
+      h('p', { class: 'prose', html:
         'where $\\rho_{\\text{in}}$ and $\\rho_{\\text{out}}$ say how the input and the output are ' +
         'each supposed to transform. <em>Invariance</em> is the special case where ' +
         '$\\rho_{\\text{out}}(g)$ is the identity: the output does not move at all. Energy is a ' +
         'scalar, so it is invariant. Force is a vector, so it is equivariant — it must turn with ' +
-        'the molecule.'),
+        'the molecule.' }),
       h('div', { class: 'note geo' },
         h('span', { class: 'tag' }, 'The distinction that matters'),
         h('div', { html:
@@ -72,11 +72,11 @@ export default {
           'invariant at the very end. Chapter 2 measures exactly what that buys.' })),
 
       h('h2', {}, 'The rotation test'),
-      h('p', { class: 'prose' },
+      h('p', { class: 'prose', html:
         'Below is a cluster of three atoms around a centre, and a ground-truth energy with real ' +
         'angular structure. Drag the rotation and watch three quantities: the true energy, which ' +
         'must not move; the true force, whose components must move but whose <em>length</em> must ' +
-        'not; and the residual of the equivariance condition, computed live.'),
+        'not; and the residual of the equivariance condition, computed live.' }),
     );
 
     // --- interactive rotation test ---------------------------------------
@@ -251,22 +251,34 @@ export default {
     const cmp = h('div', { class: 'demo' });
     cmp.append(h('h3', {}, 'Invariance error against training-set size'),
       h('p', { class: 'hint' },
-        'Lower is better. The built-in curve is at machine precision; note the log scale spans ' +
-        'roughly fifteen decades.'));
+        'Lower is better, and the log scale spans about fifteen decades. One augmentation curve ' +
+        'per multiplicity K, darker for larger K. Points where the fit had collapsed to predicting ' +
+        'the mean are omitted — such a model is perfectly invariant for a reason that has nothing ' +
+        'to do with symmetry — which is why the sparser curves begin further right.'));
     const p1 = new Plot({ width: 660, height: 300, xLog: true, yLog: true,
       xLabel: 'training configurations', yLabel: 'mean invariance error ε(g)' });
     p1.add({ points: bi.n_train.map((n, i) => [n, Math.max(bi.inv_err_mean[i], 1e-17)]),
-      color: PALETTE[0], width: 2.4, markers: true, label: 'invariant by construction' });
-    p1.add({ points: au.n_train.map((n, i) => [n, Math.max(au.inv_err_mean[i], 1e-17)]),
-      color: PALETTE[1], width: 2.4, markers: true, dash: '5 4',
-      label: `rotation augmentation (K = ${au.K.join(', ')})` });
+      color: PALETTE[0], width: 2.8, markers: true, label: 'invariant by construction' });
+    // au.inv_err_mean is indexed [n_train][K], so one curve per augmentation
+    // multiplicity. Points flagged near_trivial are dropped: a fit that has
+    // collapsed to predicting the mean is perfectly invariant for a reason that
+    // has nothing to do with having learned the symmetry.
+    au.K.forEach((K, k) => {
+      const pts = au.n_train
+        .map((n, i) => (au.near_trivial[i][k] ? null : [n, Math.max(au.inv_err_mean[i][k], 1e-17)]))
+        .filter(Boolean);
+      if (!pts.length) return;
+      p1.add({ points: pts, color: PALETTE[1], width: 1.8, markers: true, dash: '5 4',
+        opacity: 0.35 + 0.65 * (k / (au.K.length - 1)),
+        label: `augmentation, K = ${K}` });
+    });
     cmp.append(p1.render(), p1.legend(),
-      h('div', { class: 'readout' },
+      h('div', { class: 'readout', html:
         `built-in, worst case over every training size:   ` +
         `${Math.max(...bi.inv_err_max).toExponential(2)}\n` +
         `augmented, best mean invariance ever achieved:   ` +
         `${A.augmented.min_inv_err_nontrivial.toExponential(2)}\n\n` +
-        `<span class="dim">${A.augmented.trivial_note}</span>`));
+        `<span class="dim">${A.augmented.trivial_note}</span>` }));
     root.append(cmp);
 
     root.append(

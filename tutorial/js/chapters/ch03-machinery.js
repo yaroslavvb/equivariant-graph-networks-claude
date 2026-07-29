@@ -106,13 +106,13 @@ export default {
         'closed, self-contained block:'),
       h('div', { class: 'prose', style: { textAlign: 'center', margin: '1.1em 0' } },
         '$$Y_\\ell(R\\,\\hat{r}) \\;=\\; D^\\ell(R)\\, Y_\\ell(\\hat{r}).$$'),
-      h('p', { class: 'prose' },
+      h('p', { class: 'prose', html:
         'Most treatments hand you a closed-form expression involving Euler angles. You do not ' +
         'need one. Read that equation as a linear system: evaluate both sides at a batch of ' +
         'sample directions and solve for $D^\\ell$ by least squares. If a degree-$\\ell$ block ' +
         'really is closed under rotation, an exact solution exists and the residual on ' +
         '<em>held-out</em> directions is float noise. If it were not, there would be no such matrix ' +
-        'and the residual would be large. The check is the derivation.'));
+        'and the residual would be large. The check is the derivation.' }));
 
     const wDemo = h('div', { class: 'demo' });
     wDemo.append(h('h3', {}, 'Solve for D, then test it on fresh directions'),
@@ -163,19 +163,19 @@ export default {
     // ---- Clebsch-Gordan -------------------------------------------------
     root.append(
       h('h2', {}, '4. Clebsch–Gordan: the only way to multiply two features'),
-      h('p', { class: 'prose' },
+      h('p', { class: 'prose', html:
         'A network has to combine features. Adding two degree-$\\ell$ features is fine — they ' +
         'transform the same way. Multiplying is the problem: what is a vector times a vector? ' +
         'The answer is forced. The space of bilinear maps ' +
         '$V_{\\ell_1} \\times V_{\\ell_2} \\to V_{\\ell_3}$ that commute with rotation is ' +
-        '<em>at most one-dimensional</em>, and it is nonzero exactly when'),
+        '<em>at most one-dimensional</em>, and it is nonzero exactly when' }),
       h('div', { class: 'prose', style: { textAlign: 'center', margin: '1em 0' } },
         '$$|\\ell_1 - \\ell_2| \\;\\le\\; \\ell_3 \\;\\le\\; \\ell_1 + \\ell_2, \\qquad p_1 p_2 = p_3.$$'),
-      h('p', { class: 'prose' },
+      h('p', { class: 'prose', html:
         'So there is essentially <em>one</em> equivariant product for each allowed output degree, ' +
         'and the network’s only freedom is how much of each to use. That is why NequIP’s learnable ' +
         'weights live in the radial functions and the channel mixing, never in the angular part: ' +
-        'the angular part has no free parameters to learn.'),
+        'the angular part has no free parameters to learn.' }),
       h('div', { class: 'note geo' },
         h('span', { class: 'tag' }, 'How to get the coefficients without a table'),
         h('div', { html:

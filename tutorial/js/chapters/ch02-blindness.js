@@ -105,10 +105,10 @@ export default {
         `later DimeNet’s explicit three-body messages.`),
 
       h('h2', {}, 'Level 2: three-body descriptors have their own blind spot'),
-      h('p', { class: 'prose' },
+      h('p', { class: 'prose', html:
         'The real question is whether adding angles fixes the problem. It does not, and the ' +
         'counterexample is exact rather than numerical. It comes from a piece of combinatorics that ' +
-        'music theorists know as the <em>all-interval tetrachords</em>.'),
+        'music theorists know as the <em>all-interval tetrachords</em>.' }),
       h('p', { class: 'prose', html:
         `On the cyclic group $\\mathbb{Z}_{${B.n_ring}}$, the sets ` +
         `$A = \\{${B.z12_set_A.join(', ')}\\}$ and $B = \\{${B.z12_set_B.join(', ')}\\}$ have the ` +
@@ -174,15 +174,15 @@ export default {
         'Now build the features NequIP would build: for each degree $\\ell$, the atom-centred sum ' +
         '$f_\\ell = \\sum_j Y_\\ell(\\hat{r}_{ij})$ over neighbours. Two questions have to be kept ' +
         'apart, and keeping them apart is the point of the chapter.'),
-      h('p', { class: 'prose' },
+      h('p', { class: 'prose', html:
         'Asking whether the raw features differ is not quite right, because the two configurations ' +
         'might simply be rotated relative to one another. The honest question is whether they still ' +
         'differ <em>after the best possible alignment</em> — whether ' +
-        '$\\min_R \\lVert D^\\ell(R) f_\\ell^A - f_\\ell^B \\rVert$ is zero.'),
-      h('p', { class: 'prose' },
+        '$\\min_R \\lVert D^\\ell(R) f_\\ell^A - f_\\ell^B \\rVert$ is zero.' }),
+      h('p', { class: 'prose', html:
         'The second question is what the <em>invariants</em> see. The natural invariant at degree ' +
         '$\\ell$ is the power spectrum $p_\\ell = \\lVert f_\\ell \\rVert^2$, which is essentially ' +
-        'what SOAP and the descriptor tradition compute. Here are both answers at once.'));
+        'what SOAP and the descriptor tradition compute. Here are both answers at once.' }));
 
     const sepDemo = h('div', { class: 'demo' });
     sepDemo.append(h('h3', {}, 'Invariants versus equivariants, degree by degree'));
@@ -219,12 +219,12 @@ export default {
         `Lipschitz bound gives ${RQ.certified_lower_bound_L2.toFixed(4)}, so no rotation anywhere ` +
         'in $SO(3)$ can bring them together. Degree 2 is the first degree that separates this pair, ' +
         'and that is a statement about the group, not about a search budget.' }),
-      h('p', { class: 'prose' },
+      h('p', { class: 'prose', html:
         'Now read the red curve, which is the chapter’s reason for existing. The invariant power ' +
         'spectrum sits at machine zero for <em>every</em> degree up to 6. The information that ' +
         'separates A from B is present in the equivariant features and absent from their norms. It ' +
         'lives in the relative orientation between different degrees — exactly the thing that ' +
-        'taking a norm destroys.'),
+        'taking a norm destroys.' }),
 
       h('div', { class: 'note geo' },
         h('span', { class: 'tag' }, 'NequIP’s argument, in one measurement'),

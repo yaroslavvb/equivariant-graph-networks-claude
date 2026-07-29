@@ -228,20 +228,20 @@ export default {
         'The convolution and self-interaction rows stay at machine precision, because a linear map ' +
         'commutes with a rotation. The nonlinearity row does not, and the energy stops being ' +
         `invariant — by about ${decades} orders of magnitude, measured just below.`),
-      h('p', { class: 'prose' },
+      h('p', { class: 'prose', html:
         'The reason is worth stating carefully, because it is the most common way to break one of ' +
         'these networks by accident. A degree-$\\ell$ feature with $\\ell \\ge 1$ is not ' +
         '$2\\ell+1$ independent numbers. It is one geometric object whose components are ' +
         'coordinates in a chosen frame. Applying $\\tanh$ to each component applies it ' +
         '<em>in that frame</em>, and $\\tanh(Dv) \\neq D\\tanh(v)$ for a general rotation $D$. The ' +
-        'activation has quietly picked a preferred orientation for space.'),
-      h('p', { class: 'prose' },
+        'activation has quietly picked a preferred orientation for space.' }),
+      h('p', { class: 'prose', html:
         'The fix, due to Weiler and colleagues and adopted by NequIP, is the <em>gated</em> ' +
         'nonlinearity: build a scalar out of the invariant parts, push that scalar through the ' +
         'nonlinearity, and use the result to rescale the higher-degree feature. Scaling commutes ' +
         'with rotation, so the transformation law survives, while the magnitude still becomes a ' +
         'genuinely nonlinear function of the input. Degree-0 features can take any nonlinearity ' +
-        'you like — they do not transform, so there is nothing to break.'));
+        'you like — they do not transform, so there is nothing to break.' }));
 
     const sweep = h('div', { class: 'demo' });
     sweep.append(h('h3', {}, 'Both variants, over 300 random rotations'),
@@ -258,12 +258,12 @@ export default {
 
     root.append(
       h('h2', {}, 'Stacking blocks, and two things that come free'),
-      h('p', { class: 'prose' },
+      h('p', { class: 'prose', html:
         'Stack several of these and an atom’s representation reaches further with every layer — ' +
         'chapter 7 measures exactly how far, and what it costs. Two properties come free from the ' +
         'construction. Permutation symmetry, because the message is a <em>sum</em> over ' +
         'neighbours, so relabelling identical atoms changes nothing. Translation symmetry, because ' +
-        'only relative displacements $\\vec r_{ij}$ ever enter and the origin is never referenced.'),
+        'only relative displacements $\\vec r_{ij}$ ever enter and the origin is never referenced.' }),
       h('p', { class: 'prose' },
         'That leaves the second equation from the overture — forces as the gradient of the energy ' +
         'rather than a separate output. It costs one backward pass. Chapter 6 shows what happens ' +

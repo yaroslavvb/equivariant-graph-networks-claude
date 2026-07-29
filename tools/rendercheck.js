@@ -22,9 +22,27 @@
     if (err) { rows.push({ id, ok: false, why: 'render threw: ' + err.textContent }); continue; }
     const checks = [...sec.querySelectorAll('.checkline')];
     const failing = checks.filter((c) => c.querySelector('.mark.bad')).length;
+
+    // A plot fed a bad index produces NaN path coordinates, and because the axis
+    // limits are computed across every series, ONE bad series blanks the whole
+    // figure — including the correct curves next to it. That failure is silent:
+    // the chapter renders, the SVG exists, and nothing throws. Look for it.
+    let nanPath = 0, emptyPath = 0, nanText = 0;
+    sec.querySelectorAll('svg path').forEach((p) => {
+      const d = p.getAttribute('d') || '';
+      if (/NaN|Infinity/.test(d)) nanPath++;
+      if (d.trim() === '') emptyPath++;
+    });
+    sec.querySelectorAll('svg text').forEach((t) => {
+      if (/NaN|Infinity/.test(t.textContent)) nanText++;
+    });
+    // Markup passed to h() as a text child instead of via its html: attribute
+    // shows up to the reader as literal tags.
+    const markupLeak = (sec.innerText.match(/<\/?(em|span|strong|code)[ >]/g) || []).length;
+
     rows.push({
       id,
-      ok: true,
+      ok: nanPath === 0 && nanText === 0 && markupLeak === 0,
       h2: sec.querySelectorAll('h2').length,
       svg: sec.querySelectorAll('.demo svg').length,
       canvas: sec.querySelectorAll('.demo canvas').length,
@@ -32,6 +50,10 @@
       controls: sec.querySelectorAll('button, input[type=range]').length,
       checks: checks.length,
       failingChecks: failing,
+      nanPath,
+      emptyPath,
+      nanText,
+      markupLeak,
       // a chapter that rendered but produced almost nothing is a silent failure
       thin: sec.innerText.length < 1200,
     });
@@ -42,7 +64,7 @@
   console.table(rows);
   console.log(
     broken.length === 0 && thin.length === 0
-      ? `ALL ${rows.length} CHAPTERS RENDER`
+      ? `ALL ${rows.length} CHAPTERS RENDER CLEAN`
       : `PROBLEMS — broken: ${broken.map((r) => r.id).join(', ') || 'none'}; ` +
         `suspiciously thin: ${thin.map((r) => r.id).join(', ') || 'none'}`);
   if (withFailingChecks.length) {
