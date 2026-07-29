@@ -209,13 +209,16 @@ export default {
     root.append(sepDemo);
 
     root.append(
-      h('p', { class: 'prose' },
-        'Read the blue curve first. At $\\ell \\le 1$ it is zero — there genuinely is a rotation ' +
-        'that aligns the degree-1 features exactly, so vectors alone are not enough. At ' +
+      h('p', { class: 'prose', html:
+        `Read the blue curve first. At $\\ell \\le 1$ it is zero. The plotted ` +
+        `${RQ.search_min_delta_by_Lmax[1].toExponential(1)} is the resolution of the rotation ` +
+        `search, not a real gap — an explicitly constructed $R^{*}$ aligns the degree-1 features to ` +
+        `${RQ.l1_residual_at_R_star.toExponential(1)}, which is machine zero. Vectors alone are ` +
+        `genuinely not enough. At ` +
         '$\\ell \\le 2$ it jumps to a positive value, and the positivity is <em>certified</em>: a ' +
         `Lipschitz bound gives ${RQ.certified_lower_bound_L2.toFixed(4)}, so no rotation anywhere ` +
         'in $SO(3)$ can bring them together. Degree 2 is the first degree that separates this pair, ' +
-        'and that is a statement about the group, not about a search budget.'),
+        'and that is a statement about the group, not about a search budget.' }),
       h('p', { class: 'prose' },
         'Now read the red curve, which is the chapter’s reason for existing. The invariant power ' +
         'spectrum sits at machine zero for <em>every</em> degree up to 6. The information that ' +

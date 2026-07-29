@@ -17,8 +17,9 @@ What is measured
 1. RECEPTIVE FIELD GROWTH.  For cutoff r_cut the L-hop neighbourhood of an atom
    has effective radius R_eff(L) = max distance from the centre.  The textbook
    statement "the receptive field grows like L * r_cut" is an *upper bound*
-   (triangle inequality) and is never attained on a lattice.  What actually
-   holds, exactly, is
+   (triangle inequality) and is attained only when r_cut happens to be itself a
+   realizable lattice distance -- as at r_cut = 3.0 below, where c/r_cut is
+   exactly 1.  What actually holds, exactly, is
 
         R_eff(L) = L * c(r_cut),   c(r_cut) = longest lattice vector <= r_cut,
 

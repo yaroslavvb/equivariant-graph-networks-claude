@@ -185,7 +185,7 @@ def rmsd_inplane_closed_form(P: np.ndarray, Q: np.ndarray):
     for perm in itertools.permutations(range(n)):
         for s in (1, -1):
             Z = np.sum(np.exp(1j * (s * ap - aq[list(perm)])))
-            val = np.sqrt(max(0.0, 2.0 - abs(Z) / 2.0))
+            val = np.sqrt(max(0.0, 2.0 - 2.0 * abs(Z) / n))
             if val < best:
                 best, arg = val, (perm, s, float(abs(Z)))
     return float(best), arg

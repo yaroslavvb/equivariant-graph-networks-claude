@@ -734,6 +734,122 @@ def run() -> dict:
         "accumulates linearly.")
     res["time_growth"] = growth
 
+    # -- 4. A reproduction pack for the browser.  The tutorial page re-runs this
+    #       same experiment live in JavaScript, so it needs the two fitted
+    #       coefficient vectors themselves plus reference values to check its
+    #       reimplementation against.
+    n_ic_js = 8
+    ref_X, ref_V = X0[0], V0[0]
+    ref_rng = np.random.default_rng(SEED + 7)
+    U_ref = ref_rng.standard_normal((N_PART, 3))
+    U_ref /= np.linalg.norm(U_ref)
+    V_ref = ref_rng.standard_normal((N_PART, 3))
+    V_ref -= np.sum(U_ref * V_ref) * U_ref
+    V_ref /= np.linalg.norm(V_ref)
+
+    def ref_traj(coef, dt, n_steps, stride):
+        Xr, Vr = ref_X[None].copy(), ref_V[None].copy()
+        F = force_from_raw(Xr, coef)
+        ts = [0.0]
+        e = [float(true_energy(Xr)[0] + 0.5 * (Vr ** 2).sum())]
+        for step in range(n_steps):
+            Vr += 0.5 * dt * F
+            Xr += dt * Vr
+            F = force_from_raw(Xr, coef)
+            Vr += 0.5 * dt * F
+            if (step + 1) % stride == 0:
+                ts.append((step + 1) * dt)
+                e.append(float(true_energy(Xr)[0] + 0.5 * (Vr ** 2).sum()))
+        return ts, e
+
+    dt_ref, n_ref, stride_ref = MD_DT_MAIN, 1000, 50
+    t_ref, e_ref_c = ref_traj(coef_cons, dt_ref, n_ref, stride_ref)
+    _, e_ref_d = ref_traj(coef_direct, dt_ref, n_ref, stride_ref)
+
+    browser = {
+        "note": ("Everything the tutorial page needs to re-run this experiment "
+                 "live: the two fitted coefficient vectors in the shared "
+                 "79-feature raw basis, a reference configuration, and reference "
+                 "values the JavaScript reimplementation is checked against."),
+        "coef_conservative": coef_cons.tolist(),
+        "coef_direct": coef_direct.tolist(),
+        "reference_config": ref_X.tolist(),
+        "reference_velocity": ref_V.tolist(),
+        "reference_true_energy": float(true_energy(ref_X[None])[0]),
+        "reference_kinetic_energy": float(0.5 * (ref_V ** 2).sum()),
+        "reference_force_conservative": force_from_raw(ref_X[None],
+                                                       coef_cons)[0].tolist(),
+        "reference_force_direct": force_from_raw(ref_X[None],
+                                                 coef_direct)[0].tolist(),
+        "md_ic_X": X0[:n_ic_js].tolist(),
+        "md_ic_V": V0[:n_ic_js].tolist(),
+        "md_ic_note": ("the first %d of the %d initial conditions behind the MD "
+                       "aggregates above, in the same order" % (n_ic_js, MD_N_IC)),
+    }
+    for name, coef in (("conservative", coef_cons), ("direct", coef_direct)):
+        rel_r, _, atomic_r = asymmetry(coef, ref_X[None])
+        browser[f"reference_jacobian_relative_asymmetry_{name}"] = float(rel_r[0])
+        browser[f"reference_atomic_curl_{name}"] = float(atomic_r[0])
+    loop_ref = {"U": U_ref.tolist(), "V": V_ref.tolist(), "radius": 0.35,
+                "n_quadrature": 2048}
+    for name, coef in (("conservative", coef_cons), ("direct", coef_direct)):
+        w_net, w_gross = loop_work(coef, ref_X, U_ref, V_ref, 0.35)
+        loop_ref[f"net_work_{name}"] = w_net
+        loop_ref[f"gross_work_{name}"] = w_gross
+    browser["reference_loop"] = loop_ref
+    browser["reference_trajectory"] = {
+        "dt": dt_ref, "n_steps": n_ref, "record_stride": stride_ref,
+        "t": t_ref,
+        "e_total_conservative": e_ref_c,
+        "e_total_direct": e_ref_d,
+        "note": ("deliberately short: the dynamics are chaotic, so a second "
+                 "implementation tracks this trajectory to roundoff over 5 time "
+                 "units but cannot over the 200 used for the statistics"),
+    }
+    res["browser"] = browser
+
+    # -- 5. Published context.  Transcribed, not measured; kept here with its
+    #       provenance so the tutorial quotes it from data rather than prose.
+    res["leaderboard_context"] = {
+        "note": ("TRANSCRIBED FROM PUBLISHED SOURCES, NOT COMPUTED BY THIS "
+                 "SCRIPT. These are the only numbers in this experiment that "
+                 "were typed in rather than measured; they are recorded here "
+                 "with their provenance and their counterexamples so that the "
+                 "caveats travel with them."),
+        "metric": ("kappa_SRME: symmetric relative mean error of the predicted "
+                   "phonon thermal conductivity, 0 perfect, 2 worst possible"),
+        "worst_possible_kappa_srme": 2.0,
+        "association": ("On the Matbench Discovery leaderboard every submitted "
+                        "direct-force model sits above kappa_SRME 1.6, and every "
+                        "submission below 1.0 predicts forces as an energy "
+                        "gradient."),
+        "entries": [
+            {"model": "eqV2 M", "forces": "direct", "f1": 0.917,
+             "kappa_srme": 1.7707, "rmsd": 0.0691,
+             "source": "Matbench Discovery leaderboard"},
+            {"model": "CHGNet", "forces": "gradient", "f1": None,
+             "kappa_srme": 1.7167, "rmsd": None,
+             "source": "Matbench Discovery leaderboard (targets EFS_GM)"},
+            {"model": "M3GNet", "forces": "gradient", "f1": None,
+             "kappa_srme": 1.4094, "rmsd": None,
+             "source": "Matbench Discovery leaderboard (targets EFS_G)"},
+            {"model": "AlphaNet-v1-MPtrj", "forces": "gradient", "f1": None,
+             "kappa_srme": 1.3046, "rmsd": None,
+             "source": "Matbench Discovery leaderboard"},
+            {"model": "orb-v3-direct-inf-mpa", "forces": "direct", "f1": 0.883,
+             "kappa_srme": 0.348, "rmsd": None,
+             "source": "Rhodes et al., arXiv:2504.06231, Table 1"},
+        ],
+        "refutation": ("Non-conservativeness is neither necessary nor "
+                       "sufficient for a bad kappa_SRME: CHGNet is conservative "
+                       "and scores 1.7167, essentially the same as eqV2 M, "
+                       "while a direct-force variant of orb-v3 reaches 0.348."),
+        "mechanism": ("kappa_SRME depends on force constants -- second "
+                      "derivatives of the energy surface -- which direct-force "
+                      "training does not constrain, and which a conservative "
+                      "model can also get badly wrong."),
+    }
+
     res["punchline"] = {
         "force_rmse_conservative": fits["conservative"]["rmse_test_clean"],
         "force_rmse_direct": fits["direct"]["rmse_test_clean"],
