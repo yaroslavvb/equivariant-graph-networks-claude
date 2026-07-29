@@ -267,7 +267,7 @@ const maxAbsDiff = (a, b) => {
 };
 
 const e2 = (x, d = 2) => (Number.isFinite(x) ? x.toExponential(d) : String(x));
-const pad = (s, n) => (s + '                    ').slice(0, n);
+const pad = (s, n) => String(s).padEnd(n);
 
 // ---------------------------------------------------------------------------
 
@@ -476,17 +476,19 @@ export default {
       NAMES.forEach((n) => {
         live[n] = jacobianAsymmetry(S, Xref, coef[n], JA.finite_difference_h);
       });
-      const agree = Math.max(...NAMES.map((n) =>
-        Math.abs(live[n] - B['reference_jacobian_relative_asymmetry_' + n])
-        / B['reference_jacobian_relative_asymmetry_' + n]));
+      const agree = (n) => Math.abs(live[n] - B['reference_jacobian_relative_asymmetry_' + n])
+        / B['reference_jacobian_relative_asymmetry_' + n];
       jacDemo.append(p.render(), p.legend(), h('div', { class: 'readout' },
         'recomputed in your browser at the reference configuration, from the coefficient ' +
-        'vectors in the results file:\n' +
-        NAMES.map((n) => `  ${pad(n, 14)}${e2(live[n], 6)}` +
-          `    python  ${e2(B['reference_jacobian_relative_asymmetry_' + n], 6)}`).join('\n') +
-        `\n  ${pad('agreement', 14)}${e2(agree, 1)} relative` +
-        `\n\n  forces themselves reproduce python to ${e2(ver.force, 2)} absolute, ` +
-        `on forces of order 1`));
+        'vectors in the results file:\n\n' +
+        `  ${pad('', 14)}${pad('browser', 16)}${pad('python', 16)}agree to\n` +
+        NAMES.map((n) => `  ${pad(n, 14)}${pad(e2(live[n], 6), 16)}` +
+          `${pad(e2(B['reference_jacobian_relative_asymmetry_' + n], 6), 16)}` +
+          `${e2(agree(n), 1)} relative`).join('\n') +
+        `\n\n  the conservative row agrees only to ${e2(agree('conservative'), 0)} because both ` +
+        `sides of it are\n  differencing noise; the direct row, which is a real number, ` +
+        `agrees to ${e2(agree('direct'), 0)}.\n  the forces themselves reproduce python to ` +
+        `${e2(ver.force, 2)} absolute, on forces of order 1.`));
     }
     root.append(jacDemo);
 
@@ -579,9 +581,9 @@ export default {
         `${B.reference_loop.n_quadrature} quadrature points — browser against python:\n` +
         chk.map((row) => {
           const n = row[0], w = row[1];
-          return `  ${pad(n, 14)}net ${e2(w.net, 6)}   python ` +
+          return `  ${pad(n, 14)}${pad('net   ' + e2(w.net, 6), 24)}python ` +
             `${e2(B.reference_loop['net_work_' + n], 6)}\n` +
-            `  ${pad('', 14)}gross ${e2(w.gross, 6)}   python ` +
+            `  ${pad('', 14)}${pad('gross ' + e2(w.gross, 6), 24)}python ` +
             `${e2(B.reference_loop['gross_work_' + n], 6)}`;
         }).join('\n');
     };
@@ -596,7 +598,11 @@ export default {
         label: 'loop plane',
         options: planes.map((p, i) => ({ label: p.label, value: i })),
         value: 0,
-        onPick: (v) => { planeIdx = v; drawLoops(); },
+        onPick: (v) => {
+          planeIdx = v;
+          loopOut.textContent = 'integrating 25 loops…';
+          setTimeout(drawLoops, 20);
+        },
       })), loopHolder, loopOut);
     root.append(loopDemo);
     drawLoops();
@@ -667,24 +673,30 @@ export default {
       mdOut.textContent =
         `Δt = ${dt}    T = ${totalT}    ${nSteps.toLocaleString()} steps × 2 models = ` +
         `${(2 * (nSteps + 1)).toLocaleString()} force evaluations in ${ms.toFixed(0)} ms\n\n` +
-        `  drift-rate ratio on this one trajectory      ×` +
+        `  ${pad('drift-rate ratio on this one trajectory', 52)}×` +
         `${(stat.direct.slope / stat.conservative.slope).toFixed(1)}\n` +
-        `  python median over ${nIC} initial conditions   ×` +
-        `${MD.drift_ratio_direct_over_conservative.toFixed(1)}` +
-        `  (at Δt = ${MD.dt}, T = ${MD.total_time})\n\n` +
+        `  ${pad(`python median over ${nIC} ICs at this Δt, T = ${SW.total_time}`, 52)}×` +
+        `${SW.separation_at_each_dt[dtIdx].toFixed(1)}\n` +
+        `  ${pad(`python median over ${nIC} ICs at Δt = ${MD.dt}, T = ${MD.total_time}`, 52)}×` +
+        `${MD.drift_ratio_direct_over_conservative.toFixed(1)}\n` +
+        `  (a single trajectory scatters widely, and the ratio grows with run length — ` +
+        `both points are made below)\n\n` +
         `  over this run the conservative model's own invariant E_θ + KE moves by ` +
         `${e2(modExc, 2)},\n` +
         `  against a true-energy excursion of ${e2(stat.conservative.maxdev, 2)} — ` +
         `the integrator is not what is failing\n\n` +
         `browser against python, checked when this chapter loaded:\n` +
-        `  ${pad('forces', 46)}${e2(ver.force, 2)} absolute\n` +
-        `  ${pad('true energy', 46)}${e2(ver.energy, 2)} absolute\n` +
-        `  ${pad('E_true(t) over the exported T = ' + (RT.dt * RT.n_steps) + ' trajectory', 46)}` +
+        `  ${pad('forces at the reference configuration', 48)}${e2(ver.force, 2)} absolute\n` +
+        `  ${pad('true energy at the reference configuration', 48)}` +
+        `${ver.energy === 0 ? 'exact, to the last bit' : e2(ver.energy, 2) + ' absolute'}\n` +
+        `  ${pad('E_true(t) over the exported T = ' + (RT.dt * RT.n_steps) + ' trajectory', 48)}` +
         `${e2(ver.traj, 2)} absolute\n` +
-        `  ${pad('−∇E_θ against the analytic conservative force', 46)}${e2(ver.grad, 2)} relative`;
+        `  ${pad('−∇E_θ against the analytic conservative force', 48)}${e2(ver.grad, 2)} relative`;
     };
     const schedule = () => {
       if (pending) clearTimeout(pending);
+      mdOut.textContent = `integrating ${(2 * Math.round(totalT / DTS[dtIdx])).toLocaleString()}` +
+        ` steps…`;
       pending = setTimeout(() => { pending = null; runMD(); }, 60);
     };
     mdDemo.append(
@@ -904,19 +916,19 @@ export default {
           h('td', { class: 'num' }, r.kappa_srme.toFixed(4)),
           h('td', {}, r.source))))),
       h('div', { class: 'readout' },
-        `worst conservative entry here    ${pad(worstGrad.model, 24)}κ_SRME ` +
+        `${pad('worst conservative entry here', 36)}${pad(worstGrad.model, 24)}κ_SRME ` +
         `${worstGrad.kappa_srme.toFixed(4)}\n` +
-        `the direct model it is set against  ${pad(eqv2.model, 22)}κ_SRME ` +
+        `${pad('the direct model it is set against', 36)}${pad(eqv2.model, 24)}κ_SRME ` +
         `${eqv2.kappa_srme.toFixed(4)}\n` +
-        `                                 a difference of ` +
+        `${pad('', 36)}a difference of ` +
         `${(100 * (eqv2.kappa_srme - worstGrad.kappa_srme) / worstGrad.kappa_srme).toFixed(1)}%, ` +
         `with both inside ` +
         `${(100 * (1 - Math.min(eqv2.kappa_srme, worstGrad.kappa_srme)
           / LB.worst_possible_kappa_srme)).toFixed(0)}% of the worst possible ` +
         `${LB.worst_possible_kappa_srme.toFixed(1)}\n\n` +
-        `best direct entry here           ${pad(bestDirect.model, 24)}κ_SRME ` +
+        `${pad('best direct entry here', 36)}${pad(bestDirect.model, 24)}κ_SRME ` +
         `${bestDirect.kappa_srme.toFixed(3)}\n` +
-        `                                 lower than ` +
+        `${pad('', 36)}lower than ` +
         `${grad.filter((r) => r.kappa_srme > bestDirect.kappa_srme).length} of ${grad.length} ` +
         `conservative entries in this table, at F1 ${bestDirect.f1.toFixed(3)}`));
     root.append(lbDemo);
