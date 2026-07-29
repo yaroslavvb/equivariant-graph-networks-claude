@@ -1,4 +1,4 @@
-import { h, slider, segmented, checkLine, fmt } from '../ui.js';
+import { h, slider, segmented, checkLine, fmt, loadResults, Plot, PALETTE } from '../ui.js';
 import { realSH, wignerD, randomRotation, mulberry32 } from '../e3.js';
 import { rotationMatrix, matvec, norm } from '../linalg.js';
 
@@ -40,7 +40,7 @@ function trueForce(pos) {
 export default {
   id: 'symmetry',
   title: 'What symmetry demands',
-  render(root) {
+  async render(root) {
     root.append(
       h('p', { class: 'eyebrow geo' }, 'Chapter 1'),
       h('h1', {}, 'What symmetry demands'),
@@ -229,5 +229,115 @@ export default {
         worstY.toExponential(2)));
     checks.append(box);
     root.append(checks);
+
+    // ---- built-in symmetry versus symmetry learned from augmentation -----
+    const A = await loadResults('augmentation_vs_equivariance');
+    const P = A.offdist_probe;
+    const bi = A.builtin, au = A.augmented;
+
+    root.append(
+      h('h2', {}, 'Built in, or learned from examples?'),
+      h('p', { class: 'prose' },
+        'The third option — show the network rotated copies and let it work the symmetry out — is ' +
+        'the one most people reach for first, and it is worth knowing exactly what it gets you. ' +
+        'The experiment behind the next two figures fits the same invariant target two ways: once ' +
+        'with features that are invariant by construction, and once with an unconstrained model on ' +
+        'raw coordinates trained with $K$ random rotations of every example.'),
+      h('p', { class: 'prose' },
+        'The quantity to watch is the invariance error ' +
+        '$\\epsilon(g) = |f(gx) - f(x)| / (1 + |f(x)|)$, measured on held-out configurations under ' +
+        'rotations the model never saw.'));
+
+    const cmp = h('div', { class: 'demo' });
+    cmp.append(h('h3', {}, 'Invariance error against training-set size'),
+      h('p', { class: 'hint' },
+        'Lower is better. The built-in curve is at machine precision; note the log scale spans ' +
+        'roughly fifteen decades.'));
+    const p1 = new Plot({ width: 660, height: 300, xLog: true, yLog: true,
+      xLabel: 'training configurations', yLabel: 'mean invariance error ε(g)' });
+    p1.add({ points: bi.n_train.map((n, i) => [n, Math.max(bi.inv_err_mean[i], 1e-17)]),
+      color: PALETTE[0], width: 2.4, markers: true, label: 'invariant by construction' });
+    p1.add({ points: au.n_train.map((n, i) => [n, Math.max(au.inv_err_mean[i], 1e-17)]),
+      color: PALETTE[1], width: 2.4, markers: true, dash: '5 4',
+      label: `rotation augmentation (K = ${au.K.join(', ')})` });
+    cmp.append(p1.render(), p1.legend(),
+      h('div', { class: 'readout' },
+        `built-in, worst case over every training size:   ` +
+        `${Math.max(...bi.inv_err_max).toExponential(2)}\n` +
+        `augmented, best mean invariance ever achieved:   ` +
+        `${A.augmented.min_inv_err_nontrivial.toExponential(2)}\n\n` +
+        `<span class="dim">${A.augmented.trivial_note}</span>`));
+    root.append(cmp);
+
+    root.append(
+      h('p', { class: 'prose', html:
+        `Two things are worth pulling out. The built-in model's invariance error is ` +
+        `${Math.max(...bi.inv_err_max).toExponential(1)} — that is float rounding, not learning, ` +
+        `and no amount of training changes it because there is nothing to learn. The augmented ` +
+        `model never gets below ` +
+        `${A.augmented.min_inv_err_nontrivial.toExponential(1)}, about ` +
+        `${Math.round(Math.log10(A.augmented.min_inv_err_nontrivial / Math.max(...bi.inv_err_max)))} ` +
+        `orders of magnitude worse. And the experiment is careful about a trap that is easy to ` +
+        `fall into: a model that has given up and predicts a constant is perfectly invariant for a ` +
+        `stupid reason, so the honest figure excludes fits that are within 10% of just predicting ` +
+        `the mean.` }),
+
+      h('h2', {}, 'The sharper test: rotations you did not train on'),
+      h('p', { class: 'prose' },
+        'Averaged invariance error understates the problem, because augmentation makes a model ' +
+        'invariant on the orbit it was shown rather than on the group. The probe below trains the ' +
+        'unconstrained model three ways — with fully general rotations, with rotations about the ' +
+        '$z$-axis only, and with small rotations only — then tests all three under general ' +
+        'rotations.'));
+
+    const probe = h('div', { class: 'demo' });
+    probe.append(h('h3', {}, 'Off-distribution probe'),
+      h('p', { class: 'hint' },
+        `Unconstrained model, ${P.n_train} training configurations, K = ${P.K} augmentations each. ` +
+        'nRMSE of 1.0 means no better than predicting the mean.'));
+    const famLabel = { full: 'all rotations', zaxis: 'z-axis only', smallangle: 'small angles only' };
+    const rows = P.families.map((tr) => h('tr', { class: tr === 'full' ? '' : 'hi' },
+      h('td', {}, famLabel[tr]),
+      ...P.families.map((te) => h('td', { class: 'num' },
+        `${fmt(P.inv_err_mean[tr][te], 3)}`,
+        h('span', { class: 'dim', style: { color: '#8A929B' } }, ` / ${fmt(P.inv_err_max[tr][te], 2)}`))),
+      h('td', { class: 'num' }, fmt(P.nrmse_canonical[tr], 3)),
+      h('td', { class: 'num' }, fmt(P.nrmse_rotated[tr], 3))));
+    probe.append(h('table', {},
+      h('thead', {},
+        h('tr', {},
+          h('th', {}, ''), h('th', { class: 'num', colspan: '3' }, 'ε(g) mean / max, tested under'),
+          h('th', { class: 'num', colspan: '2' }, 'nRMSE')),
+        h('tr', {},
+          h('th', {}, 'trained with'),
+          ...P.families.map((te) => h('th', { class: 'num' }, famLabel[te])),
+          h('th', { class: 'num' }, 'canonical'), h('th', { class: 'num' }, 'rotated'))),
+      h('tbody', {}, rows)));
+    root.append(probe);
+
+    root.append(
+      h('p', { class: 'prose', html:
+        `The first row is the honest baseline: trained on all rotations, the model does about ` +
+        `equally badly in both orientations (${fmt(P.nrmse_canonical.full, 3)} against ` +
+        `${fmt(P.nrmse_rotated.full, 3)}) — it is at least consistent. The other two rows are the ` +
+        `result that matters. Restrict the training rotations and the model looks <em>better</em> ` +
+        `in the orientation it was shown — ${fmt(P.nrmse_canonical.zaxis, 3)} for the $z$-axis ` +
+        `model, against ${fmt(P.nrmse_canonical.full, 3)} — and then fails completely when the ` +
+        `test configuration is rotated somewhere it has never been: ` +
+        `${fmt(P.nrmse_rotated.zaxis, 3)}, which is worse than predicting the mean.` }),
+      h('div', { class: 'note geo' },
+        h('span', { class: 'tag' }, 'What augmentation actually buys'),
+        h('div', { html:
+          'Invariance on the orbit you sampled, not invariance on the group. That distinction is ' +
+          'invisible if your test set is drawn the same way as your training set, and it is exactly ' +
+          'the situation a molecular-dynamics trajectory puts you in — the molecule tumbles into ' +
+          'orientations nobody chose. Building the transformation law into the architecture makes ' +
+          'the question moot. Chapter 3 is how that is done.' })),
+      h('p', { class: 'prose' },
+        'One caveat in fairness to augmentation: the unconstrained model here is a random-feature ' +
+        'ridge regression, not a deep network trained for a long time, and at 2026 data scales a ' +
+        'large model with heavy augmentation can get close enough that the difference stops ' +
+        'dominating. Chapter 9 returns to this, because one of the models currently in the top five ' +
+        'of Matbench Discovery is deliberately not equivariant at all.'));
   },
 };

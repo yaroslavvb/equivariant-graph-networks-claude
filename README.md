@@ -88,6 +88,15 @@ for f in python/experiments/*.py; do uv run python "$f"; done
 
 Every run is deterministic (seeds fixed) and reproduces the committed `results/*.json`.
 
+Or sweep everything at once — every check ledger plus a shape check on the ES modules:
+
+```bash
+./tools/verify.sh
+```
+
+which currently reports **219/219 PASS** across `e3.py` and the seven experiment scripts, and
+`ALL MODULES OK` for the ten tutorial chapters.
+
 To read the tutorial locally it must be served over HTTP, because the chapters `fetch` their data:
 
 ```bash

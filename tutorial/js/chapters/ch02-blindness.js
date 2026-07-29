@@ -92,7 +92,7 @@ export default {
             h('td', {}, h('span', { class: 'pill' },
               `max |Δ| = ${A.g2_max_abs_diff.toExponential(0)}`))),
           h('tr', { class: 'hi' },
-            h('td', {}, 'the energy they actually have (Stillinger–Weber)'),
+            h('td', {}, 'the Stillinger–Weber three-body angular term'),
             h('td', { class: 'num' }, A.sw_energy_equilateral.toFixed(4)),
             h('td', { class: 'num' }, A.sw_energy_clustered.toFixed(4)),
             h('td', {}, h('span', { class: 'pill bad' },
@@ -250,11 +250,23 @@ export default {
         'reachable. The Multi-ACE analysis of 2022 later showed these are two views of one design ' +
         'space — chapter 9 picks that thread up, and it matters more than it sounds, because ' +
         'several models at the top of today’s leaderboard came down the ACE road rather than this one.'),
-      h('p', { class: 'prose' },
-        'One honest caveat about this example. Every parity-odd bispectrum entry vanishes for both ' +
-        `configurations (largest value ${BS.max_abs_value_odd_parity.toExponential(1)}), because ` +
-        'both are planar and therefore achiral. That is a property of this particular pair, not a ' +
-        'general fact — but it is a useful reminder that parity is a real label and not decoration.'));
+      h('p', { class: 'prose', html:
+        `Two honest caveats about this example. The parity-odd bispectrum entries all vanish for ` +
+        `both configurations (largest value ${BS.max_abs_value_odd_parity.toExponential(1)}), ` +
+        `because both are planar and therefore achiral. But that is weaker evidence than the row ` +
+        `count suggests: of the ${BS.entries.filter((e) => e.parity < 0).length} parity-odd triples ` +
+        `tabulated, most are identically zero for <em>any</em> geometry, because the coupling ` +
+        `tensor is antisymmetric under exchanging two equal degrees and the bispectrum contracts ` +
+        `the same feature into both slots. Only one genuinely distinct pseudo-scalar is being ` +
+        `tested here. The conclusion — planar implies achiral implies vanishing pseudo-scalars — ` +
+        `is right; the evidence is one measurement, not fifteen.` }),
+      h('p', { class: 'prose', html:
+        `Second, the even-parity table is also over-counted as printed: ` +
+        `$C^{\\ell_1\\ell_2\\ell_3}$ is the same invariant under permutation of its indices up to ` +
+        `sign, so the ${BS.entries.filter((e) => e.parity > 0).length} ordered even-parity rows ` +
+        `collapse to substantially fewer distinct invariants — the maximum quoted above reappears ` +
+        `under a permuted index order. The separation is real; the number of independent witnesses ` +
+        `to it is smaller than the table length.` }));
 
     const ledger = h('div', { class: 'demo' });
     ledger.append(h('h3', {}, 'Check ledger — python/experiments/descriptor_blindness.py'),

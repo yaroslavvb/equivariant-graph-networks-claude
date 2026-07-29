@@ -487,8 +487,8 @@ export default {
       h('div', { class: 'readout' },
         `  MAE   global log-log slope  ${E1.mae_global_loglog_slope.toFixed(5)}` +
         `   (MAE = sigma * sqrt(2/pi), exactly)\n` +
-        `  F1    global log-log slope  ${E1.f1_global_loglog_slope.toFixed(3)}` +
-        `   but local slopes range ${E1.min_abs_loglog_slope_f1.toFixed(3)}` +
+        `  F1    global log-log slope ${E1.f1_global_loglog_slope.toFixed(3)}` +
+        `   but |local slopes| range ${E1.min_abs_loglog_slope_f1.toFixed(3)}` +
         ` to ${E1.max_abs_loglog_slope_f1.toFixed(3)}\n\n` +
         `  peak |dlogF1/dlogsigma| = ${E1.max_abs_loglog_slope_f1.toFixed(3)}` +
         ` +/- ${E1.max_abs_loglog_slope_f1_se.toFixed(3)}` +
@@ -741,12 +741,16 @@ export default {
         `By the bottom row the model has thrown away ` +
         `${pct(E4.rows[E4.rows.length - 1].fraction_of_stable_pool_lost, 1)} of the stable pool ` +
         `while still wasting only ` +
-        `${E4.rows[E4.rows.length - 1].wasted_dft_relaxations.toFixed(2)} relaxations. Under this ` +
-        `protocol recall degrades far faster than precision — a fall of ` +
+        `${E4.rows[E4.rows.length - 1].wasted_dft_relaxations.toFixed(2)} relaxations. Recall does ` +
+        `degrade faster than precision across the sweep, though only slightly — a fall of ` +
         `${(E1.recall[0] - E1.recall[last]).toFixed(3)} against ` +
-        `${(E1.precision[0] - E1.precision[last]).toFixed(3)} across the sweep — so the metric ` +
-        `that stays comfortable is the one measuring the cheap, visible error, and the metric ` +
-        `that craters is the one measuring the expensive, invisible one.` }),
+        `${(E1.precision[0] - E1.precision[last]).toFixed(3)}, which is a narrow margin and is ` +
+        `stated as such in the ledger. The counts are where the asymmetry is unmistakable. False ` +
+        `negatives grow monotonically until they consume nearly the whole stable pool, while ` +
+        `false positives peak at ${maxOf(E4.rows.map((r) => r.fp)).toFixed(2)} and then <em>fall ` +
+        `back</em> to ${E4.rows[E4.rows.length - 1].fp.toFixed(2)}, because a hull pinned to noise ` +
+        `outliers leaves fewer and fewer candidates below it. The expensive, invisible error is ` +
+        `unbounded; the cheap, visible one saturates.` }),
       h('p', { class: 'prose', html:
         `The threshold is a lever on the same trade. Matbench Discovery’s headline is ` +
         `$E_{\\rm hull} \\le 0$, but it reports a sweep, and so does the script. Loosening the ` +
@@ -800,10 +804,10 @@ export default {
         `The clean real-world instance of the P-versus-Q experiment is the pair ` +
         `<strong>${eq.model}</strong> and <strong>${dpa.model}</strong>. The first beats the ` +
         `second on F1 by ${(eq.f1 - dpa.f1).toFixed(3)} and loses to it on CPS by ` +
-        `${(dpa.cps - eq.cps).toFixed(3)} — and the second was trained on the smaller corpus, ` +
-        `with ${dpa.note}. Whichever column you sort on you get a defensible answer and a ` +
-        `different winner. That is not a flaw in the leaderboard; it is the leaderboard telling ` +
-        `you that “best model” is not a well-posed question.` }),
+        `${(dpa.cps - eq.cps).toFixed(3)} — and the second is the smaller of the two on every ` +
+        `axis that usually predicts a win (${dpa.note}). Whichever column you sort on you get a ` +
+        `defensible answer and a different winner. That is not a flaw in the leaderboard; it is ` +
+        `the leaderboard telling you that “best model” is not a well-posed question.` }),
       h('div', { class: 'note dat' },
         h('span', { class: 'tag' }, 'the honest reading of κ_SRME'),
         h('div', { html:

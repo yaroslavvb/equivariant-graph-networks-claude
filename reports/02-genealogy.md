@@ -49,9 +49,13 @@ fixed input layer cannot absorb a varying number of atoms.
 
 The second was representational, and is where the ceiling was set. Cartesian coordinates are
 replaced by a fixed-length vector of hand-designed atom-centred symmetry functions, damped by the
-cosine cutoff $f_c(R_{ij}) = \tfrac{1}{2}[\cos(\pi R_{ij}/R_c) + 1]$: a radial family
-$G_i^{1} = \sum_{j \neq i} e^{-\eta (R_{ij} - R_s)^2} f_c(R_{ij})$ and an angular family
-$G_i^{2} = 2^{1-\zeta}\sum_{j,k \neq i}(1 + \lambda \cos\theta_{ijk})^{\zeta} e^{-\eta(R_{ij}^2 + R_{ik}^2 + R_{jk}^2)} f_c(R_{ij})f_c(R_{ik})f_c(R_{jk})$.
+cosine cutoff $f_c(R_{ij}) = \tfrac{1}{2}[\cos(\pi R_{ij}/R_c) + 1]$ — a radial family and an
+angular family:
+
+$$G_i^{1} = \sum_{j \neq i} e^{-\eta (R_{ij} - R_s)^2} f_c(R_{ij}),$$
+
+$$G_i^{2} = 2^{1-\zeta}\sum_{j,k \neq i}(1 + \lambda \cos\theta_{ijk})^{\zeta}\,
+e^{-\eta(R_{ij}^2 + R_{ik}^2 + R_{jk}^2)}\, f_c(R_{ij})f_c(R_{ik})f_c(R_{jk}).$$
 
 Rotational invariance here is achieved by hand, not by group theory: the only geometric primitives
 ever exposed to the network are interatomic distances and bond-angle cosines, which are already
@@ -122,12 +126,13 @@ $A = \{0, 1, 4, 6\}$ and $B = \{0, 1, 3, 7\}$ are a homometric (cyclotomically $
 they have the same interval vector $(1,1,1,1,1,1)$, bitwise-identical sorted radii, sorted
 pairwise distances agreeing to $2.2 \times 10^{-16}$, sorted bond cosines agreeing to
 $2.2 \times 10^{-16}$, and power spectra agreeing to $3.1 \times 10^{-15}$ out to $\ell = 6$ — yet
-their minimum RMSD over all of $O(3)$ and all permutations is exactly $(\sqrt3 - 1)/2 \approx
-0.36603$, so they are genuinely different clusters. Every descriptor in this strand, and every
-model built on one, assigns them the same energy. A simpler warm-up in the same chapter shows
-three neighbours at $120^\circ$ versus three neighbours clustered at $0^\circ/30^\circ/60^\circ$:
-the two-body descriptor $G^{2}$ is *bitwise* identical (maximum absolute difference exactly 0.0),
-while a Stillinger–Weber three-body energy differs by a factor of 42.86.
+their minimum RMSD over all of $O(3)$ and all permutations is exactly
+$(\sqrt3 - 1)/2 \approx 0.36603$, so they are genuinely different clusters. Every descriptor in
+this strand, and every model built on one, assigns them the same energy. A simpler warm-up in the
+same chapter shows three neighbours at $120^\circ$ versus three neighbours clustered at
+$0^\circ/30^\circ/60^\circ$: the two-body descriptor $G^{2}$ is *bitwise* identical (maximum
+absolute difference exactly 0.0), while a Stillinger–Weber three-body energy differs by a factor
+of 42.86.
 
 ### Moment Tensor Potentials: the Cartesian route
 
@@ -369,8 +374,9 @@ new $\ell$*. For **bilinear** maps, Schur's lemma plus the multiplicity-free Cle
 $D^{\ell_1}\otimes D^{\ell_2} \cong \bigoplus_{L = |\ell_1 - \ell_2|}^{\ell_1 + \ell_2} D^{L}$
 gives
 
-$$\dim \operatorname{Hom}(V_{\ell_1}\otimes V_{\ell_2}, V_{\ell_3}) = \begin{cases} 1 & |\ell_1 -
-\ell_2| \le \ell_3 \le \ell_1 + \ell_2 \\ 0 & \text{otherwise,}\end{cases}$$
+$$\dim \operatorname{Hom}(V_{\ell_1}\otimes V_{\ell_2}, V_{\ell_3}) = 1
+\quad\text{if } |\ell_1 - \ell_2| \le \ell_3 \le \ell_1 + \ell_2, \quad\text{and } 0
+\text{ otherwise,}$$
 
 so the equivariant bilinear map *exists* iff the triangle rule holds and is then *unique up to one
 real scalar*. That map is the Clebsch–Gordan contraction
@@ -1203,18 +1209,16 @@ University** (Seungwu Han's group, with Park, Kim and Hwang) produced SevenNet a
 communication scheme that made deep message passing practical.
 
 Beyond those: **Shapeev at Skoltech** (MTP), **Thompson and colleagues at Sandia** (SNAP),
-**Schütt, Müller and colleagues at TU Berlin/FHI** (SchNet), **Unke and Meuwly at Basel**
-(PhysNet),
+**Schütt, Müller and colleagues at TU Berlin/FHI** (SchNet), **Unke and Meuwly at Basel** (PhysNet),
 **Gasteiger/Klicpera and Günnemann at TU Munich** (DimeNet, GemNet), **Zhang, Wang, Car and E** and
 the DeepModeling/AISI ecosystem (DeePMD → DPA-4), **Chen and Ong at UC San Diego** (M3GNet),
 **Ceder's group at Berkeley/LBNL** (CHGNet and MPtrj), **Google DeepMind** (GNoME), **Microsoft
 Research AI for Science** (MatterSim), **Orbital Materials** (ORB), **Samsung Electronics**
 (EquFlash and FlashTP), **Xu, Xie and Hu at ShanghaiTech** (TACE, TECE), **Zhou, Hu, Tan and Jia
 at ICT, CAS** (MatRIS), **Cohen and Welling at Amsterdam** (G-CNNs, Steerable CNNs), **Kondor at
-Chicago** (N-body Nets, CG Nets, Cormorant), **Weiler, Geiger and Boomsma** (3D Steerable CNNs),
-and
-**Riebesell, Goodall and the Matbench Discovery authors**, whose benchmark is the reason any of this
-can be compared at all.
+Chicago** (N-body Nets, CG Nets, Cormorant), **Weiler, Geiger and Boomsma** (3D Steerable CNNs), and
+**Riebesell, Goodall and the Matbench Discovery authors**, whose benchmark is the reason any of
+this can be compared at all.
 
 The reading-group observation that started this project — that the current leader is a graph
 attention transformer incorporating rotational symmetry — was accurate when it was made and is now

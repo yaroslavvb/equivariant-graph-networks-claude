@@ -264,8 +264,9 @@ export default {
         `Two things in that picture are worth more than the numbers beside them. The field is not ` +
         `a sphere — it is the ball of the graph metric, an octahedron at the smallest cutoff and a ` +
         `cube at the largest, and the sphere it is inscribed in has a good deal more room in it ` +
-        `than the model actually uses. And the blue circle reaches the red one at only one of the ` +
-        `six cutoffs offered, $r_{\\mathrm{cut}} = ${exactCuts.join(', ')}$; at the other ` +
+        `than the model actually uses. And the blue circle reaches the red one at only ` +
+        `${exactCuts.length} of the ${SW.length} cutoffs offered — ` +
+        `$r_{\\mathrm{cut}} = ${exactCuts.join(', ')}\\,d$ — while at the other ` +
         `${shortCuts.length} it falls short.` }),
 
       h('h2', {}, 'The bound everybody quotes is not the law'),
