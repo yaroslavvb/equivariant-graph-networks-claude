@@ -267,6 +267,8 @@ const maxAbsDiff = (a, b) => {
 };
 
 const e2 = (x, d = 2) => (Number.isFinite(x) ? x.toExponential(d) : String(x));
+// the results file is written in ASCII; render its strings the way the prose is set.
+const kap = (s) => String(s).replace(/kappa_SRME/g, '\u03BA_SRME').replace(/ -- /g, ' \u2014 ');
 const pad = (s, n) => String(s).padEnd(n);
 
 // ---------------------------------------------------------------------------
@@ -574,8 +576,8 @@ export default {
       const chk = NAMES.map((n) => [n, loopWork(S, Xref, planes[0].U, planes[0].V,
         B.reference_loop.radius, coef[n], B.reference_loop.n_quadrature)]);
       loopOut.textContent =
-        `${pl.label}:  small-loop exponent fitted live over ρ ≤ 0.06 is ${expo.toFixed(3)}, ` +
-        `against the 2 that Stokes’ theorem predicts\n` +
+        `${pl.label}:  small-loop exponent fitted live over ρ ≤ 0.06 is ${expo.toFixed(3)},\n` +
+        `${pad('', pl.label.length + 2)}against the 2 that Stokes’ theorem predicts\n` +
         `${(2 * radii.length * 512).toLocaleString()} force evaluations in ${ms.toFixed(0)} ms\n\n` +
         `reference loop, ρ = ${B.reference_loop.radius} at ` +
         `${B.reference_loop.n_quadrature} quadrature points — browser against python:\n` +
@@ -679,12 +681,22 @@ export default {
         `${SW.separation_at_each_dt[dtIdx].toFixed(1)}\n` +
         `  ${pad(`python median over ${nIC} ICs at Δt = ${MD.dt}, T = ${MD.total_time}`, 52)}×` +
         `${MD.drift_ratio_direct_over_conservative.toFixed(1)}\n` +
-        `  (a single trajectory scatters widely, and the ratio grows with run length — ` +
-        `both points are made below)\n\n` +
+        `  (a single trajectory scatters widely, and the ratio grows with\n` +
+        `   run length — both points are made below)\n\n` +
         `  over this run the conservative model's own invariant E_θ + KE moves by ` +
         `${e2(modExc, 2)},\n` +
         `  against a true-energy excursion of ${e2(stat.conservative.maxdev, 2)} — ` +
         `the integrator is not what is failing\n\n` +
+        `python's own max|ΔE| for this very initial condition, at Δt = ${MD.dt}, ` +
+        `T = ${MD.total_time}:\n` +
+        NAMES.map((n) => {
+          const v = MD['maxdev_per_traj_' + n][icIdx];
+          return `  ${pad(n, 16)}${e2(v, 3)}` +
+            (v > S.De ? `   destroyed — past the Morse well depth D_e = ${S.De}` : '');
+        }).join('\n') +
+        `\n  past a few tens of time units the two implementations are on different\n` +
+        `  trajectories — the dynamics are chaotic — so those agree in magnitude, not step ` +
+        `by step\n\n` +
         `browser against python, checked when this chapter loaded:\n` +
         `  ${pad('forces at the reference configuration', 48)}${e2(ver.force, 2)} absolute\n` +
         `  ${pad('true energy at the reference configuration', 48)}` +
@@ -703,9 +715,13 @@ export default {
       h('h3', {}, 'Velocity-Verlet, run in your browser, from the same initial condition'),
       h('p', { class: 'hint' },
         `Both trajectories start from one of the ${B.md_ic_X.length} initial conditions the ` +
-        `Python script exported. Shrinking the timestep repairs an integrator error and does ` +
-        `nothing at all to an error in the field itself; that is the whole diagnostic, and you ` +
-        `can drive it here.`),
+        `Python script exported, in its own order, so each one can be checked against the ` +
+        `figures it produced. Number 1 is deliberately not a typical one: it is among the ` +
+        `${Math.round(MD.frac_runaway_direct * nIC)} of ${nIC} direct-model runs that are ` +
+        `destroyed outright, and it is an unusually bad case for the conservative model too. ` +
+        `Shrinking ` +
+        `the timestep repairs an integrator error and does nothing at all to an error in the ` +
+        `field itself; that is the whole diagnostic, and you can drive it here.`),
       h('div', { class: 'controls' },
         slider({ label: 'timestep Δt', min: 0, max: DTS.length - 1, step: 1, value: dtIdx,
           format: (v) => String(DTS[v]), onInput: (v) => { dtIdx = v; schedule(); } }),
@@ -799,21 +815,20 @@ export default {
       cB.append(pB.render(), pB.legend());
       grid.append(cA, cB);
       scaleDemo.append(grid, h('div', { class: 'readout' },
-        `left:   neither model's true-energy drift rate improves as Δt shrinks. the direct ` +
-        `model's varies by only\n` +
-        `        ×${SW.direct_slope_spread.toFixed(2)} across the whole ` +
-        `×${SW.dt_ratio_coarse_over_fine} range in Δt, and the conservative model's max|ΔE| by ` +
-        `only ×${SW.conservative_true_maxdev_spread.toFixed(2)}.\n` +
-        `        both are model error, not integrator error, and the separation holds at every ` +
-        `timestep tested:\n` +
+        `left:   neither model's true-energy drift rate improves as Δt shrinks.\n` +
+        `        the direct model's varies by only ` +
+        `×${SW.direct_slope_spread.toFixed(2)} across the whole ` +
+        `×${SW.dt_ratio_coarse_over_fine} range in Δt,\n` +
+        `        and the conservative model's max|ΔE| by only ` +
+        `×${SW.conservative_true_maxdev_spread.toFixed(2)}. both are model error,\n` +
+        `        not integrator error. the separation holds at every timestep tested:\n` +
         `        ${SW.separation_at_each_dt.map((v) => '×' + v.toFixed(0)).join(',  ')}\n\n` +
-        `right:  the one quantity that does follow the integrator. the conservative model's own ` +
-        `invariant E_θ + KE\n` +
-        `        degrades by ×${SW.model_energy_excursion_growth_coarse_over_fine.toFixed(1)} ` +
-        `across the sweep, where Δt² predicts ` +
-        `×${(SW.dt_ratio_coarse_over_fine ** 2).toFixed(0)}. that is textbook velocity-Verlet, ` +
-        `and it\n` +
-        `        vanishes as Δt → 0. the direct model has no such invariant to plot.`));
+        `right:  the one quantity that does follow the integrator. the conservative\n` +
+        `        model's own invariant E_θ + KE degrades by ` +
+        `×${SW.model_energy_excursion_growth_coarse_over_fine.toFixed(1)} across the sweep,\n` +
+        `        where Δt² predicts ×${(SW.dt_ratio_coarse_over_fine ** 2).toFixed(0)}. ` +
+        `that is textbook velocity-Verlet, and it vanishes\n` +
+        `        as Δt → 0. the direct model has no such invariant to plot.`));
     }
     root.append(scaleDemo);
 
@@ -856,9 +871,10 @@ export default {
         `<em>magnitude</em>, which is why the claim that survives checking is the paired one.` }),
       h('p', { class: 'prose', html:
         `Three further caveats, all recorded in the results file. ` +
-        `${fmt(100 * MD.frac_runaway_direct, 0)}% of direct-model trajectories are destroyed ` +
-        `outright, with $|\\Delta E|$ exceeding a full Morse well depth, against ` +
-        `${fmt(100 * MD.frac_runaway_conservative, 0)}% of conservative ones; because that ` +
+        `${Math.round(MD.frac_runaway_direct * nIC)} of ${nIC} direct-model trajectories are ` +
+        `destroyed outright, with $|\\Delta E|$ exceeding a full Morse well depth, against ` +
+        `${Math.round(MD.frac_runaway_conservative * nIC)} of ${nIC} conservative ones; ` +
+        `because that ` +
         `minority would dominate any mean, every MD aggregate here is a median. The ` +
         `conservative model’s true energy is not constant either — it wanders by about ` +
         `${fmt(MD.median_maxdev_conservative, 4)}, because $E_\\theta$ is a fit and not the true ` +
@@ -884,7 +900,7 @@ export default {
         `The first half is well evidenced. The second half is false, and the numbers that refute ` +
         `it sit in the same table.` }),
       h('p', { class: 'prose', html:
-        `The association is real, and it is strong. ${LB.association} On this metric 0 is ` +
+        `The association is real, and it is strong. ${kap(LB.association)} On this metric 0 is ` +
         `perfect and ${LB.worst_possible_kappa_srme.toFixed(1)} is the worst attainable value, ` +
         `so a score of 1.77 is not “poor” in the way a large MAE is poor; it is closer to having ` +
         `no useful signal at all.` }));
@@ -895,7 +911,7 @@ export default {
     const dirRows = rows.filter((r) => r.forces === 'direct');
     const bestDirect = dirRows.reduce((m, r) => (r.kappa_srme < m.kappa_srme ? r : m), dirRows[0]);
     const worstGrad = grad.reduce((m, r) => (r.kappa_srme > m.kappa_srme ? r : m), grad[0]);
-    const eqv2 = rows.reduce((m, r) => (r.kappa_srme > m.kappa_srme ? r : m), rows[0]);
+    const worstDirect = dirRows.reduce((m, r) => (r.kappa_srme > m.kappa_srme ? r : m), dirRows[0]);
     lbDemo.append(
       h('h3', {}, 'Five published entries that decide the question'),
       h('p', { class: 'hint' },
@@ -918,27 +934,27 @@ export default {
       h('div', { class: 'readout' },
         `${pad('worst conservative entry here', 36)}${pad(worstGrad.model, 24)}κ_SRME ` +
         `${worstGrad.kappa_srme.toFixed(4)}\n` +
-        `${pad('the direct model it is set against', 36)}${pad(eqv2.model, 24)}κ_SRME ` +
-        `${eqv2.kappa_srme.toFixed(4)}\n` +
+        `${pad('the direct model it is set against', 36)}${pad(worstDirect.model, 24)}κ_SRME ` +
+        `${worstDirect.kappa_srme.toFixed(4)}\n` +
         `${pad('', 36)}a difference of ` +
-        `${(100 * (eqv2.kappa_srme - worstGrad.kappa_srme) / worstGrad.kappa_srme).toFixed(1)}%, ` +
-        `with both inside ` +
-        `${(100 * (1 - Math.min(eqv2.kappa_srme, worstGrad.kappa_srme)
-          / LB.worst_possible_kappa_srme)).toFixed(0)}% of the worst possible ` +
+        `${(100 * (worstDirect.kappa_srme - worstGrad.kappa_srme) / worstGrad.kappa_srme).toFixed(1)}%, ` +
+        `both inside ` +
+        `${(100 * (1 - Math.min(worstDirect.kappa_srme, worstGrad.kappa_srme)
+          / LB.worst_possible_kappa_srme)).toFixed(0)}%\n${pad('', 36)}of the worst possible ` +
         `${LB.worst_possible_kappa_srme.toFixed(1)}\n\n` +
         `${pad('best direct entry here', 36)}${pad(bestDirect.model, 24)}κ_SRME ` +
         `${bestDirect.kappa_srme.toFixed(3)}\n` +
         `${pad('', 36)}lower than ` +
         `${grad.filter((r) => r.kappa_srme > bestDirect.kappa_srme).length} of ${grad.length} ` +
-        `conservative entries in this table, at F1 ${bestDirect.f1.toFixed(3)}`));
+        `conservative entries here, at F1 ${bestDirect.f1.toFixed(3)}`));
     root.append(lbDemo);
 
     root.append(
       h('p', { class: 'prose', html:
         `Take those two rows in turn. ${worstGrad.model} predicts forces as an energy gradient — ` +
         `it is conservative by construction — and scores ${worstGrad.kappa_srme.toFixed(4)}, ` +
-        `essentially the same as the direct-force ${eqv2.model} at ` +
-        `${eqv2.kappa_srme.toFixed(4)}, whose unique-prototype F1 of ${eqv2.f1.toFixed(3)} is ` +
+        `essentially the same as the direct-force ${worstDirect.model} at ` +
+        `${worstDirect.kappa_srme.toFixed(4)}, whose unique-prototype F1 of ${worstDirect.f1.toFixed(3)} is ` +
         `excellent. So non-conservativeness is not <em>necessary</em> for a catastrophic phonon ` +
         `score. And ${bestDirect.model} predicts forces directly, with no energy gradient ` +
         `anywhere, and scores ${bestDirect.kappa_srme.toFixed(3)}. So it is not ` +
@@ -946,7 +962,7 @@ export default {
         `${grad.filter((r) => r !== worstGrad).map((r) => r.kappa_srme.toFixed(4)).join(' and ')}, ` +
         `sit in between and make the same point more mildly.` }),
       h('p', { class: 'prose', html:
-        `What survives is a mechanism rather than a law. ${LB.mechanism} That is exactly the ` +
+        `What survives is a mechanism rather than a law. ${kap(LB.mechanism)} That is exactly the ` +
         `quantity this chapter measured, and the link is worth stating precisely: the Jacobian ` +
         `$\\partial F_a / \\partial x_b$ whose asymmetry was plotted above <em>is</em> the ` +
         `force-constant matrix, up to a sign. A direct-force model is never penalised for ` +
