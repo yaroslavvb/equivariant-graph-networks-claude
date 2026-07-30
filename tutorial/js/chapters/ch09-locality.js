@@ -162,7 +162,7 @@ export default {
     const last = DV.configs[DV.configs.length - 1];
 
     root.append(
-      h('p', { class: 'eyebrow geo' }, 'Chapter 8'),
+      h('p', { class: 'eyebrow geo' }, 'Chapter 9'),
       h('h1', {}, 'How far does locality reach'),
       h('p', { class: 'lede' },
         'Depth is the only way a message-passing network acquires reach. One interaction layer ' +

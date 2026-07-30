@@ -118,7 +118,7 @@ export default {
     const decades = Math.round(Math.log10(ratio));
 
     root.append(
-      h('p', { class: 'eyebrow geo' }, 'Chapter 5'),
+      h('p', { class: 'eyebrow geo' }, 'Chapter 6'),
       h('h1', {}, 'One NequIP layer, assembled'),
       h('p', { class: 'lede' },
         'Everything from chapter 4, wired into an actual interaction block. The interesting part ' +
@@ -232,7 +232,7 @@ export default {
         'over $\\ell_f$ up to $\\ell_{\\max}$. Summing products of radial functions with harmonics ' +
         'across degrees is precisely a spherical-harmonic expansion of an arbitrary filter, so in ' +
         'the limit $\\ell_{\\max}\\to\\infty$ nothing is lost at all. Truncating at finite ' +
-        '$\\ell_{\\max}$ is the only real restriction — and chapter 6 is the measurement of what ' +
+        '$\\ell_{\\max}$ is the only real restriction — and chapter 7 is the measurement of what ' +
         'that truncation costs.' }),
     );
 
@@ -245,11 +245,11 @@ export default {
         'and it is where the notation gets forbidding. It carries six superscripts and five indices, ' +
         'and it is worth taking apart slowly, because every one of them is doing a job.' }),
       h('div', { class: 'prose', style: { textAlign: 'center', margin: '1.3em 0', overflowX: 'auto' } },
-        '$$\\mathcal{L}^{(l_o,\\,p_o,\\,l_f,\\,l_i,\\,p_f,\\,p_i)}_{a\\,c\\,m_o}\\!\\left(\\vec r_a,\\, ' +
-        'V^{(l_i,p_i)}_{a\\,c\\,m_i}\\right) \\;=\\; ' +
-        '\\sum_{m_f,\\,m_i} C^{(l_o,m_o)}_{(l_i,m_i)(l_f,m_f)} ' +
-        '\\sum_{b\\,\\in\\,S} R^{(l_f,\\,l_i,\\,p_f,\\,p_i)}_{c}\\!\\left(r_{ab}\\right)\\, ' +
-        'Y^{(l_f)}_{m_f}\\!\\left(\\hat r_{ab}\\right)\\, V^{(l_i,p_i)}_{b\\,c\\,m_i}$$'),
+        '$$\\mathcal{L}^{l_o,p_o,l_f,p_f,l_i,p_i}_{a\\,c\\,m_o}\\!\\left(\\vec r_a,\\, ' +
+        'V^{l_i,p_i}_{a\\,c\\,m_i}\\right) \\;=\\; ' +
+        '\\sum_{m_f,\\,m_i} C^{l_o,m_o}_{l_i,m_i,l_f,m_f} ' +
+        '\\sum_{b\\,\\in\\,S} \\bigl(R(r_{ab})_{c,\\,l_o,\\,p_o,\\,l_f,\\,p_f,\\,l_i,\\,p_i}\\bigr)\\, ' +
+        'Y^{l_f}_{m_f}\\!\\left(\\hat r_{ab}\\right)\\, V^{l_i,p_i}_{b\\,c\\,m_i}$$'),
 
       h('h3', {}, 'Read it from the inside out'),
       h('p', { class: 'prose', html:
@@ -287,11 +287,16 @@ export default {
       h('p', { class: 'prose', html:
         'A layer does not compute one of these. It computes one for every combination of ' +
         '$(l_i, p_i)$ input, $l_f$ filter and $(l_o, p_o)$ output that the selection rules allow, ' +
-        'and sums the results into the output features. Each such combination is called a ' +
-        '<em>path</em>, and — this is the important part — <strong>each path gets its own learnable ' +
-        'radial function</strong>, which is what the superscripts on $R^{(l_f, l_i, p_f, p_i)}_c$ are ' +
-        'recording. The parameter count of the layer is essentially the number of paths times the ' +
-        'number of channels times the size of the little radial network.' }),
+        'and then — the paper is explicit about this, and it is easy to assume otherwise — ' +
+        '<strong>concatenates</strong> them rather than summing them. Each such combination is a ' +
+        '<em>path</em>, and each path gets its own learnable radial function, which is what the ' +
+        'subscripts on $R(r_{ab})_{c,\\,l_o,p_o,l_f,p_f,l_i,p_i}$ are recording: one function per ' +
+        'path <em>and</em> per channel. The parameter count of the layer is essentially the number of ' +
+        'paths times the number of channels times the size of the little radial network. In the ' +
+        'paper’s words, “there can be multiple $\\mathcal{L}^{l_o,p_o}_{acm_o}$ tensors for a given ' +
+        'output rotation order and parity resulting from different combinations of $(l_i, p_i)$ and ' +
+        '$(l_f, p_f)$; we take all such possible output tensors with $l_o \\le l_{\\max}$ and ' +
+        'concatenate them.”' }),
       h('p', { class: 'prose', html:
         'Which paths survive is fixed by two rules and no taste at all. The triangle rule from ' +
         'chapter 4, $|l_i - l_f| \\le l_o \\le l_i + l_f$, and equation 7’s parity rule, ' +
@@ -313,7 +318,7 @@ export default {
     root.append(
       h('p', { class: 'prose', html:
         'Two things are worth noticing in that table. The path count grows quickly with ' +
-        '$\\ell_{\\max}$ — which is the real cost of raising it, and the reason chapter 6’s ablation ' +
+        '$\\ell_{\\max}$ — which is the real cost of raising it, and the reason chapter 7’s ablation ' +
         'is not free accuracy. And every cell you click reports $\\sigma_2$ of order one, meaning the ' +
         'coupling for that path is unique: there is exactly one way to combine those two degrees ' +
         'into that output, so the only thing left to learn is <em>how much</em> of it to use. That ' +
@@ -331,8 +336,25 @@ export default {
           'steeply in $\\ell_{\\max}$, which is what made higher degrees expensive and what eSCN ' +
           '(<a href="https://arxiv.org/abs/2302.03655">arXiv:2302.03655</a>) later attacked by ' +
           'rotating each edge into a frame where the harmonic collapses to its $m = 0$ component and ' +
-          'most of the Clebsch–Gordan matrix becomes zero. Chapter 10 follows that thread — it is ' +
+          'most of the Clebsch–Gordan matrix becomes zero. Chapter 11 follows that thread — it is ' +
           'how the transformer branch reached $\\ell = 6$ at practical cost.' })),
+
+      h('div', { class: 'note' },
+        h('span', { class: 'tag' }, 'Three details in the paper’s own commentary'),
+        h('div', { html:
+          'Worth carrying, because each answers a question the equation provokes. ' +
+          '<strong>The index placement means nothing.</strong> The paper says so outright — “the ' +
+          'placement of indices into sub- and superscript does not carry specific meaning” — so do ' +
+          'not look for variance and covariance here; it is typography.<br><br>' +
+          '<strong>The couplings ignore parity.</strong> “The Clebsch–Gordan coefficients do not ' +
+          'depend on the parity of the arguments.” Parity is enforced entirely by the equation-7 ' +
+          'selection rule deciding which paths exist; once a path is allowed, the coefficients are ' +
+          'the ordinary $SO(3)$ ones.<br><br>' +
+          '<strong>There is a normalisation the equation omits.</strong> The output of the sum over ' +
+          'neighbours is divided by $\\sqrt{N}$, with $N$ the average number of neighbours. Without ' +
+          'it the message magnitude would scale with coordination number, so an atom in a dense ' +
+          'environment would produce systematically larger features than one in a sparse environment ' +
+          'for no physical reason — and the effect would compound with depth.' })),
 
       h('h3', {}, 'What breaks if you change any of it'),
       h('p', { class: 'prose', html:
@@ -456,13 +478,13 @@ export default {
       h('h2', {}, 'Stacking blocks, and two things that come free'),
       h('p', { class: 'prose', html:
         'Stack several of these and an atom’s representation reaches further with every layer — ' +
-        'chapter 8 measures exactly how far, and what it costs. Two properties come free from the ' +
+        'chapter 9 measures exactly how far, and what it costs. Two properties come free from the ' +
         'construction. Permutation symmetry, because the message is a <em>sum</em> over ' +
         'neighbours, so relabelling identical atoms changes nothing. Translation symmetry, because ' +
         'only relative displacements $\\vec r_{ij}$ ever enter and the origin is never referenced.' }),
       h('p', { class: 'prose' },
         'That leaves the second equation from the overture — forces as the gradient of the energy ' +
-        'rather than a separate output. It costs one backward pass. Chapter 7 shows what happens ' +
+        'rather than a separate output. It costs one backward pass. Chapter 8 shows what happens ' +
         'to models that skip it, and why that turned into a visible column on the leaderboard.'),
     );
   },

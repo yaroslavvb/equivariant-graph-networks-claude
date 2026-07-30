@@ -195,7 +195,7 @@ export default {
 
     // ------------------------------------------------------------------
     root.append(
-      h('p', { class: 'eyebrow dat' }, 'Chapter 9'),
+      h('p', { class: 'eyebrow dat' }, 'Chapter 10'),
       h('h1', {}, 'Stability is a decision, not a regression'),
       h('p', { class: 'lede' },
         'Every model in the previous seven chapters was measured in meV per atom. The benchmark ' +
@@ -207,9 +207,9 @@ export default {
       h('h2', {}, 'What the reading group was circling'),
       h('p', { class: 'prose' },
         'Three separate worries came up in the reading group, all of them correct, and all of ' +
-        'them reaching for a vocabulary that already exists. The wording below is approximate.'),
+        'them reaching for a vocabulary that already exists. The three below are paraphrases.'),
       h('blockquote', {},
-        h('div', {}, '“…thermodynamically stable versus physically realizable…”'),
+        h('div', {}, 'Thermodynamically stable is not the same as physically realisable.'),
         h('span', { class: 'attrib' }, 'reading group, 23 July 2026')),
       h('p', { class: 'prose' },
         'That is the right distinction, and the benchmark takes the first half of it very ' +
@@ -218,7 +218,8 @@ export default {
         'on it. Whether the compound can actually be made is a different question that no energy ' +
         'model on the board attempts to answer.'),
       h('blockquote', {},
-        h('div', {}, '“…the classes are so imbalanced… can we see F1 rather than accuracy…”'),
+        h('div', {},
+          'The classes are so imbalanced that accuracy will not say much — can we see F1 instead?'),
         h('span', { class: 'attrib' }, 'reading group, 23 July 2026')),
       h('p', { class: 'prose', html:
         'This is exactly the benchmark’s own reasoning, arrived at independently and in the ' +
@@ -228,7 +229,7 @@ export default {
         'the range people publish.' }),
       h('blockquote', {},
         h('div', {},
-          '“…two hundred thousand of them, but they’re just very individual ionic substitutions…”'),
+          'Two hundred thousand of them, but they are individual ionic substitutions.'),
         h('span', { class: 'attrib' }, 'reading group, 23 July 2026')),
       h('p', { class: 'prose' },
         'Also right, and the benchmark agrees: it reports a unique-prototypes split precisely ' +
@@ -817,7 +818,7 @@ export default {
           `conservative and scores 1.7167, essentially the same as ${eq.model}; ORB-v3’s ` +
           `direct-force variant scores 0.348. The quantity that actually matters is the accuracy ` +
           `of the <em>second</em> derivatives of the energy surface, which direct-force training ` +
-          `does not constrain and which a conservative model can also get wrong. Chapter 7 takes ` +
+          `does not constrain and which a conservative model can also get wrong. Chapter 8 takes ` +
           `that mechanism apart.` })),
       h('p', { class: 'prose' },
         'Which brings the argument back to where the reading group started. They asked for F1 ' +

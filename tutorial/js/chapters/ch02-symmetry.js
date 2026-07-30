@@ -26,7 +26,7 @@ function trueEnergy(pos) {
 }
 
 // True forces on the central atom, by exact-enough central differences of the
-// analytic energy. (Chapter 7 makes the gradient structure the whole subject.)
+// analytic energy. (Chapter 8 makes the gradient structure the whole subject.)
 function trueForce(pos) {
   const eps = 1e-6;
   const f = [0, 0, 0];
@@ -349,7 +349,7 @@ export default {
         'One caveat in fairness to augmentation: the unconstrained model here is a random-feature ' +
         'ridge regression, not a deep network trained for a long time, and at 2026 data scales a ' +
         'large model with heavy augmentation can get close enough that the difference stops ' +
-        'dominating. Chapter 10 returns to this, because one of the models currently in the top five ' +
+        'dominating. Chapter 11 returns to this, because one of the models currently in the top five ' +
         'of Matbench Discovery is deliberately not equivariant at all.'));
   },
 };

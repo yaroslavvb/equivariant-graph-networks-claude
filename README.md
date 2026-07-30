@@ -22,7 +22,7 @@ out — see [the meeting notes](reports/04-meeting-notes.md).
 ## Start here
 
 - **[The clickable tutorial](https://yaroslavvb.github.io/equivariant-graph-networks-claude/tutorial/)** —
-  eleven chapters, arrow keys or click to move. Rotate a molecule and watch the equivariance residual;
+  twelve chapters, arrow keys or click to move. Rotate a molecule and watch the equivariance residual;
   derive the Clebsch–Gordan couplings in your browser; break a network by choosing the obvious
   nonlinearity; drag noise onto a convex hull and watch F1 collapse while MAE barely moves.
 - **[The convolution filter, factorised](https://yaroslavvb.github.io/equivariant-graph-networks-claude/interactive/filter-explorer.html)**
@@ -30,6 +30,11 @@ out — see [the meeting notes](reports/04-meeting-notes.md).
   $S^{(l)}_{m}(\vec r_{ij}) = R(\lVert\vec r_{ij}\rVert)\,Y^{(l)}_{m}(\hat r_{ij})$. Drag the
   radial function anywhere you like and the equivariance residual stays at machine precision; let the
   radial part peek at direction and it breaks at once.
+- **[Clebsch–Gordan and the bispectrum](https://yaroslavvb.github.io/equivariant-graph-networks-claude/tutorial/#couplings)**
+  — the one algebraic object underneath both halves of the field: the coefficients as a
+  change-of-basis for $V_{\ell_1}\otimes V_{\ell_2} \cong \bigoplus_\ell V_\ell$, the invariants
+  they generate, and why the descriptor road and the message-passing road differ only in *when* they
+  contract to a scalar.
 - **[The genealogy of an idea](reports/02-genealogy.md)** — the centrepiece. Five braided strands
   and where they land.
 - **[Reading the leaderboard](reports/03-leaderboard.md)** — what Matbench Discovery measures, and
@@ -100,7 +105,7 @@ Or sweep everything at once — every check ledger plus a shape check on the ES 
 ```
 
 which currently reports **219/219 PASS** across `e3.py` and the seven experiment scripts, and
-`ALL MODULES OK` for the eleven tutorial chapters.
+`ALL MODULES OK` for the twelve tutorial chapters.
 
 To read the tutorial locally it must be served over HTTP, because the chapters `fetch` their data:
 

@@ -54,9 +54,9 @@ export default {
         'chemistry and materials science cares about is a property of this one surface. Its minima ' +
         'are stable structures. Its gradients are forces, so its shape determines every trajectory. ' +
         'Its second derivatives are the force constants that set vibrational frequencies and ' +
-        'phonons — which is why chapter 7 turns out to matter. Its saddle points are transition ' +
+        'phonons — which is why chapter 8 turns out to matter. Its saddle points are transition ' +
         'states and therefore reaction rates. Relative depths of minima decide which phase is ' +
-        'stable, which is the subject of chapter 9.' }),
+        'stable, which is the subject of chapter 10.' }),
       h('div', { class: 'note geo' },
         h('span', { class: 'tag' }, 'The modelling problem, in one line'),
         h('div', { html:
@@ -183,19 +183,19 @@ export default {
             'Energy is <em>extensive</em>: double the system and the energy roughly doubles. The ' +
             'decomposition $E = \\sum_i \\varepsilon_i$ into atomic contributions builds this in, ' +
             'and it is what makes size transfer possible at all. It also smuggles in an assumption ' +
-            '— that an atom’s contribution depends only on its neighbourhood — which chapter 8 ' +
+            '— that an atom’s contribution depends only on its neighbourhood — which chapter 9 ' +
             'examines and finds is not always true.' })),
         h('div', { class: 'card dat' }, h('h4', {}, '4. The derivatives are the product'),
           h('p', { html:
             'Almost nothing uses $E$ directly. Dynamics uses $-\\nabla E$; phonons and thermal ' +
             'conductivity use second derivatives; elastic response uses the stress. So the model ' +
             'must be smooth and differentiable, and it is judged on quantities it was never ' +
-            'directly trained on. Chapter 7 is what happens when that is forgotten.' })),
+            'directly trained on. Chapter 8 is what happens when that is forgotten.' })),
         h('div', { class: 'card syn' }, h('h4', {}, '5. Labels are the binding constraint'),
           h('p', { html:
             'Every training point costs a DFT calculation. Sample efficiency is therefore not a ' +
             'nicety, it is the currency of the field — and it is precisely the axis on which NequIP ' +
-            'made its claim. Chapter 6 is the measurement.' })),
+            'made its claim. Chapter 7 is the measurement.' })),
         h('div', { class: 'card syn' }, h('h4', {}, '6. Errors compound'),
           h('p', { html:
             'A held-out force error is a one-step quantity. A simulation applies the model millions ' +
@@ -232,7 +232,7 @@ export default {
           'whether the derived observable comes out right. NequIP’s lithium-transport result is the ' +
           'good example: a diffusivity within 9% of the reference is a far stronger claim than any ' +
           'force MAE, because diffusion is a collective, trajectory-level quantity that a model ' +
-          'cannot fake by being locally smooth. Chapter 9 shows the same lesson on the benchmark ' +
+          'cannot fake by being locally smooth. Chapter 10 shows the same lesson on the benchmark ' +
           'side, where a model can have an excellent regression error and still make bad decisions.' })),
 
       h('p', { class: 'prose' },

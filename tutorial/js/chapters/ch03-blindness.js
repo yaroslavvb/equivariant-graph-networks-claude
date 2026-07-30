@@ -248,7 +248,7 @@ export default {
         'NequIP’s alternative is to not choose. Keep the equivariant features, let the network ' +
         'learn which couplings matter, and stack layers so that products of products become ' +
         'reachable. The Multi-ACE analysis of 2022 later showed these are two views of one design ' +
-        'space — chapter 10 picks that thread up, and it matters more than it sounds, because ' +
+        'space — chapter 11 picks that thread up, and it matters more than it sounds, because ' +
         'several models at the top of today’s leaderboard came down the ACE road rather than this one.'),
       h('p', { class: 'prose', html:
         `Two honest caveats about this example. The parity-odd bispectrum entries all vanish for ` +

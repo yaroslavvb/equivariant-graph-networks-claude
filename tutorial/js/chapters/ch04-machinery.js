@@ -293,7 +293,7 @@ export default {
       h('p', { class: 'prose' },
         'A way to turn a bond direction into features of every degree; a way to say exactly how ' +
         'each degree turns; and a complete, forced list of the ways two features may be ' +
-        'multiplied. That is the entire toolkit. Chapter 5 assembles it into a layer.'),
+        'multiplied. That is the entire toolkit. Chapter 6 assembles it into a layer.'),
     );
   },
 };

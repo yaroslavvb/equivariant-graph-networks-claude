@@ -232,4 +232,13 @@ export class Plot {
   }
 }
 
+/** Cross-reference another chapter by id, so the number stays correct when the
+ *  running order changes. Falls back to the id if the map is not up yet. */
+export function chRef(id, { capital = false } = {}) {
+  const n = (typeof window !== 'undefined' && window.CHAPTER_NUMBER)
+    ? window.CHAPTER_NUMBER[id] : undefined;
+  const word = capital ? 'Chapter' : 'chapter';
+  return n === undefined ? `the ${id} chapter` : `${word} ${n}`;
+}
+
 export const PALETTE = ['#1F4E79', '#B5443C', '#C9A227', '#3E7C59', '#6C4A8C', '#5A6773'];

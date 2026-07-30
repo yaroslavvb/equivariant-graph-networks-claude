@@ -16,8 +16,8 @@
       'Geometry checks would all false-positive; show the pane and re-run.');
     return { skipped: true };
   }
-  const ids = ['question', 'problem', 'symmetry', 'blindness', 'machinery', 'layer',
-               'lmax', 'forces', 'locality', 'hull', 'genealogy'];
+  const ids = ['question', 'problem', 'symmetry', 'blindness', 'machinery', 'couplings',
+               'layer', 'lmax', 'forces', 'locality', 'hull', 'genealogy'];
   const rows = [];
   for (const id of ids) {
     location.hash = '#' + id;
