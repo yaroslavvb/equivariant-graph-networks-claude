@@ -54,8 +54,11 @@ kinked derivatives will heat, drift, or blow up in NVE dynamics. This is why eve
 architecture below is built from smooth functions with smooth cutoffs, and why the choice of an
 envelope function with vanishing first and second derivatives at the cutoff is not cosmetic.
 
-The [opening chapter of the tutorial](../tutorial/index.html#question) sets up the same problem
-interactively.
+[Chapter 1 of the tutorial](../tutorial/index.html#problem) develops this at length and makes the
+cost gap adjustable: what the Born–Oppenheimer surface is, where the labels come from and why
+reproducing a functional perfectly also reproduces its errors, and the six features that make this an
+unusual regression problem rather than ordinary supervised learning with an expensive labeller. The
+[opening chapter](../tutorial/index.html#question) frames why the question came up at all.
 
 ---
 
