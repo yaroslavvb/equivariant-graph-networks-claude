@@ -17,7 +17,7 @@ export default {
         'rotational symmetry. So we’re going to read this overview… we should keep in mind that ' +
         'graph attention transformers are the leading ones right now.”',
         h('span', { class: 'attrib' },
-          'Reading group, 23 July 2026 — auto-transcribed, lightly cleaned')),
+          'Reading group, 23 July 2026 — wording approximate')),
 
       h('p', { class: 'prose' },
         'Two claims are packed in there. One is a fact about a leaderboard. The other — ' +

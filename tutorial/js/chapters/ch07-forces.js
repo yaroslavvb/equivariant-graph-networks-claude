@@ -2,7 +2,7 @@ import { h, slider, segmented, checkLine, loadResults, Plot, PALETTE, fmt } from
 
 // ---------------------------------------------------------------------------
 // The two fitted force fields, reimplemented here so the page can integrate
-// them live.  Everything below is a transcription of
+// them live.  Everything below is a port of
 // python/experiments/conservative_vs_direct.py; the coefficient vectors, the
 // reference configuration and the values it is checked against all come out of
 // the results JSON.
