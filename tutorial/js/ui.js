@@ -1,10 +1,20 @@
 // Shared UI helpers for tutorial chapters: DOM building, plotting, results loading.
 
+const SVG_NS = 'http://www.w3.org/2000/svg';
+// createElement('svg') builds an unknown *HTML* element that silently lays out
+// with zero height, so SVG tags have to go through createElementNS.
+const SVG_TAGS = new Set(['svg', 'g', 'path', 'circle', 'ellipse', 'line', 'rect',
+  'polyline', 'polygon', 'text', 'tspan', 'defs', 'marker', 'use', 'clipPath',
+  'linearGradient', 'radialGradient', 'stop', 'title']);
+
 export function h(tag, attrs = {}, ...children) {
-  const el = document.createElement(tag);
+  const isSvg = SVG_TAGS.has(tag);
+  const el = isSvg ? document.createElementNS(SVG_NS, tag) : document.createElement(tag);
   for (const [k, v] of Object.entries(attrs)) {
     if (v == null || v === false) continue;
-    if (k === 'class') el.className = v;
+    // SVGElement.className is a read-only SVGAnimatedString, so it needs the
+    // attribute path even though HTML elements do not.
+    if (k === 'class') { if (isSvg) el.setAttribute('class', v); else el.className = v; }
     else if (k === 'html') el.innerHTML = v;
     else if (k === 'style' && typeof v === 'object') Object.assign(el.style, v);
     else if (k.startsWith('on') && typeof v === 'function') el.addEventListener(k.slice(2).toLowerCase(), v);

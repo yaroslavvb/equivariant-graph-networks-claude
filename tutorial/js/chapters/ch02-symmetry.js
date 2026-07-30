@@ -26,7 +26,7 @@ function trueEnergy(pos) {
 }
 
 // True forces on the central atom, by exact-enough central differences of the
-// analytic energy. (Chapter 6 makes the gradient structure the whole subject.)
+// analytic energy. (Chapter 7 makes the gradient structure the whole subject.)
 function trueForce(pos) {
   const eps = 1e-6;
   const f = [0, 0, 0];
@@ -42,7 +42,7 @@ export default {
   title: 'What symmetry demands',
   async render(root) {
     root.append(
-      h('p', { class: 'eyebrow geo' }, 'Chapter 1'),
+      h('p', { class: 'eyebrow geo' }, 'Chapter 2'),
       h('h1', {}, 'What symmetry demands'),
       h('p', { class: 'lede' },
         'Rotate a molecule and its energy must not change; rotate a molecule and its forces must ' +
@@ -69,7 +69,7 @@ export default {
           'at the first layer and has to reconstruct angular relationships indirectly from ' +
           'distances forever after. NequIP’s move was to let internal features be equivariant — ' +
           'vectors and higher tensors that rotate with the molecule — and only collapse to an ' +
-          'invariant at the very end. Chapter 2 measures exactly what that buys.' })),
+          'invariant at the very end. Chapter 3 measures exactly what that buys.' })),
 
       h('h2', {}, 'The rotation test'),
       h('p', { class: 'prose', html:
@@ -193,7 +193,7 @@ export default {
       h('p', { class: 'prose' },
         'The last option needs a language for “this feature is a vector, that one is a rank-2 ' +
         'tensor, and here is exactly how each turns.” That language is the representation theory ' +
-        'of the rotation group, and it is the subject of chapter 3. First, though, the case for ' +
+        'of the rotation group, and it is the subject of chapter 4. First, though, the case for ' +
         'the prosecution: what precisely does a network lose by keeping only invariants?'),
     );
 
@@ -214,7 +214,7 @@ export default {
       worstE = Math.max(worstE, Math.abs(trueEnergy(pos) - E0));
       const RF0 = matvec(R, F0), F = trueForce(pos);
       worstF = Math.max(worstF, Math.hypot(F[0] - RF0[0], F[1] - RF0[1], F[2] - RF0[2]));
-      // and the harmonics themselves, the objects chapter 3 is built from
+      // and the harmonics themselves, the objects chapter 4 is built from
       const D = wignerD(2, R);
       const lhs = realSH(2, matvec(R, CLUSTER[0]));
       const rhs = matvec(D, realSH(2, CLUSTER[0]));
@@ -344,12 +344,12 @@ export default {
           'invisible if your test set is drawn the same way as your training set, and it is exactly ' +
           'the situation a molecular-dynamics trajectory puts you in — the molecule tumbles into ' +
           'orientations nobody chose. Building the transformation law into the architecture makes ' +
-          'the question moot. Chapter 3 is how that is done.' })),
+          'the question moot. Chapter 4 is how that is done.' })),
       h('p', { class: 'prose' },
         'One caveat in fairness to augmentation: the unconstrained model here is a random-feature ' +
         'ridge regression, not a deep network trained for a long time, and at 2026 data scales a ' +
         'large model with heavy augmentation can get close enough that the difference stops ' +
-        'dominating. Chapter 9 returns to this, because one of the models currently in the top five ' +
+        'dominating. Chapter 10 returns to this, because one of the models currently in the top five ' +
         'of Matbench Discovery is deliberately not equivariant at all.'));
   },
 };

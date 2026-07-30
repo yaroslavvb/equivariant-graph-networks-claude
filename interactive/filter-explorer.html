@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The convolution filter, factorised — R(‖r‖) × Y(r̂)</title>
+<meta name="description" content="Interactive explorer for the NequIP convolution filter: why constraining it to a product of a learnable radial function and a spherical harmonic makes it equivariant, and what breaks when it is not.">
+<link rel="stylesheet" href="../tutorial/css/tutorial.css">
+<script>
+window.MathJax = { tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+  chtml: { scale: 0.95 },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] } };
+</script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
+</head>
+<body>
+<div class="wrap" style="padding-top:34px">
+  <p class="eyebrow geo">Interactive</p>
+  <h1>The convolution filter, factorised</h1>
+  <p class="lede">NequIP constrains its convolution filters to be
+  $S^{(l)}_{m}(\vec r_{ij}) = R(\lVert\vec r_{ij}\rVert)\, Y^{(l)}_{m}(\hat r_{ij})$ — a
+  <em>learnable</em> function of the bond length times a <em>fixed</em> spherical harmonic of the
+  bond direction. This page is that constraint, made draggable.</p>
+
+  <div class="prose">
+    <p>A filter is a function of a full three-dimensional displacement, which carries both a length
+    and a direction. The constraint says: factorise it, and put every free parameter on the length
+    side. $R$ receives one number and returns one number, so it is structurally incapable of knowing
+    which way the bond points — a rotation is invisible to it. $Y^{(l)}$ sees only the unit vector
+    and has no parameters at all.</p>
+
+    <p>Under a rotation $g$ the two factors therefore do completely different things:</p>
+    <p style="text-align:center">$$S^{(l)}(g\,\vec r) = R(\lVert g\,\vec r\rVert)\,Y^{(l)}(g\,\hat r)
+      = R(\lVert \vec r\rVert)\,D^{(l)}(g)\,Y^{(l)}(\hat r) = D^{(l)}(g)\,S^{(l)}(\vec r).$$</p>
+
+    <p>A rotation preserves length, so $R$ comes through untouched; the harmonic picks up exactly the
+    Wigner matrix. The filter is equivariant <strong>for any $R$ whatsoever</strong>, which is why
+    training cannot break it — training only moves $R$.</p>
+
+    <p><strong>Try it.</strong> Drag the radial coefficients anywhere you like, invert them, zero
+    them, and watch the equivariance residual at the bottom stay at machine precision. Then raise the
+    last slider, which lets $R$ peek at direction, and watch it break at once.</p>
+  </div>
+
+  <div class="demo" id="host">
+    <h3>Explorer</h3>
+    <p class="hint">Left: the learnable half. Right: how a rotation mixes the 2ℓ+1 components.
+    Below: their product, the filter itself, on a plane through the origin.</p>
+  </div>
+
+  <p class="prose"><a href="../tutorial/index.html#layer">← chapter 4 of the tutorial</a>, where this
+  sits in context, or the <a href="../">repository</a>.</p>
+</div>
+
+<script type="module">
+import { filterExplorer } from '../tutorial/js/filter-explorer.js';
+document.getElementById('host').appendChild(filterExplorer());
+if (window.MathJax && window.MathJax.typesetPromise) {
+  window.MathJax.typesetPromise().catch(() => {});
+}
+</script>
+</body>
+</html>

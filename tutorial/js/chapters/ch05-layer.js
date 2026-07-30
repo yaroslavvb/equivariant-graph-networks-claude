@@ -3,6 +3,7 @@ import {
   realSH, wignerD, envelope, besselBasis, randomRotation, mulberry32,
 } from '../e3.js';
 import { matvec, norm } from '../linalg.js';
+import { filterExplorer } from '../filter-explorer.js';
 
 // A fixed toy molecule: a central atom with five neighbours inside the cutoff.
 const R_CUT = 2.6;
@@ -116,10 +117,10 @@ export default {
     const decades = Math.round(Math.log10(ratio));
 
     root.append(
-      h('p', { class: 'eyebrow geo' }, 'Chapter 4'),
+      h('p', { class: 'eyebrow geo' }, 'Chapter 5'),
       h('h1', {}, 'One NequIP layer, assembled'),
       h('p', { class: 'lede' },
-        'Everything from chapter 3, wired into an actual interaction block. The interesting part ' +
+        'Everything from chapter 4, wired into an actual interaction block. The interesting part ' +
         'is not that it works — it is which pieces you are forbidden from choosing freely, and ' +
         'what happens the moment you choose one of them the obvious way.'),
 
@@ -136,7 +137,7 @@ export default {
         'of the bond direction with the Clebsch–Gordan product, weight the result by a function of ' +
         'the bond <em>length</em> alone, and sum over neighbours. ' +
         '<strong>Every learnable parameter sits in $R$</strong> — the radial part, which takes a ' +
-        'scalar and returns a scalar. The angular part has no parameters, because chapter 3 showed ' +
+        'scalar and returns a scalar. The angular part has no parameters, because chapter 4 showed ' +
         'there is nothing to choose: the coupling is unique.' }),
 
       h('div', { class: 'note geo' },
@@ -150,6 +151,88 @@ export default {
           'Nearly the whole architecture is a consequence of the symmetry requirement plus ' +
           'differentiability. That is the sense in which NequIP is less an invention than a ' +
           'derivation.' })),
+
+      h('h2', {}, 'The filter, taken apart'),
+      h('p', { class: 'prose', html:
+        'The paper states the constraint in one sentence: <em>“the convolution filters ' +
+        '$S^{(l)}_{m}(\\vec r_{ij})$ are constrained to be products of learnable radial functions ' +
+        'and spherical harmonics, which are equivariant under SO(3).”</em> It is worth slowing ' +
+        'down, because that sentence contains the entire reason the architecture works.' }),
+      h('div', { class: 'prose', style: { textAlign: 'center', margin: '1.2em 0' } },
+        '$$S^{(l)}_{m}\\!\\left(\\vec r_{ij}\\right) \\;=\\; ' +
+        '\\underbrace{R\\!\\left(\\lVert \\vec r_{ij}\\rVert\\right)}_{\\text{learnable, scalar}} ' +
+        '\\;\\cdot\\; ' +
+        '\\underbrace{Y^{(l)}_{m}\\!\\left(\\hat r_{ij}\\right)}_{\\text{fixed, carries the geometry}}$$'),
+      h('p', { class: 'prose', html:
+        'A filter is a function of a full three-dimensional displacement $\\vec r_{ij}$, which ' +
+        'carries both a length and a direction. The constraint says: <strong>factorise it, and put ' +
+        'every free parameter on the length side.</strong> $R$ receives a single number, ' +
+        '$\\lVert\\vec r_{ij}\\rVert$, and returns a single number. It is structurally incapable of ' +
+        'knowing which way the bond points, so a rotation cannot change what it computes — the ' +
+        'rotation is invisible to it. Meanwhile $Y^{(l)}$ sees only the unit vector ' +
+        '$\\hat r_{ij}$ and has no parameters at all; its transformation law is fixed by ' +
+        'representation theory before any training happens.' }),
+      h('p', { class: 'prose', html:
+        'So under a rotation $g$ the two factors do completely different things, and that is the ' +
+        'point:' }),
+      h('div', { class: 'prose', style: { textAlign: 'center', margin: '1.1em 0' } },
+        '$$S^{(l)}\\!\\left(g\\,\\vec r_{ij}\\right) \\;=\\; ' +
+        'R\\!\\left(\\lVert g\\,\\vec r_{ij}\\rVert\\right)\\, Y^{(l)}\\!\\left(g\\,\\hat r_{ij}\\right) ' +
+        '\\;=\\; R\\!\\left(\\lVert \\vec r_{ij}\\rVert\\right)\\, D^{(l)}(g)\\, Y^{(l)}\\!\\left(\\hat r_{ij}\\right) ' +
+        '\\;=\\; D^{(l)}(g)\\, S^{(l)}\\!\\left(\\vec r_{ij}\\right)$$'),
+      h('p', { class: 'prose', html:
+        'The middle step is where the whole thing turns. A rotation preserves length, so ' +
+        '$\\lVert g\\vec r\\rVert = \\lVert\\vec r\\rVert$ and the scalar $R$ comes through ' +
+        'untouched — it commutes with $D^{(l)}(g)$ trivially, being a number. The harmonic picks up ' +
+        'exactly the Wigner matrix, by the defining property from chapter 4. The filter is ' +
+        'therefore equivariant <em>for any $R$ whatsoever</em>. Training cannot break it, because ' +
+        'training only moves $R$.' }),
+      h('p', { class: 'prose' },
+        'The explorer below is that argument made tangible. Drag the radial coefficients as ' +
+        'violently as you like — invert them, zero them, make the function oscillate — and watch ' +
+        'the equivariance residual at the bottom refuse to move off machine precision. Then turn ' +
+        'on the last slider, which lets $R$ peek at direction, and watch it break immediately.'),
+    );
+
+    const explorer = h('div', { class: 'demo' });
+    explorer.append(
+      h('h3', {}, 'The convolution filter, factorised'),
+      h('p', { class: 'hint' },
+        'Left: the learnable half, a function of bond length alone. Right: how a rotation mixes ' +
+        'the 2ℓ+1 components. Below: their product, the filter itself, on a plane through the origin.'),
+      filterExplorer());
+    root.append(explorer);
+
+    root.append(
+      h('div', { class: 'note geo' },
+        h('span', { class: 'tag' }, 'Three things the explorer is showing at once'),
+        h('div', { html:
+          '<strong>The radial factor is blind to rotation.</strong> The readout prints the change ' +
+          'in every bond length under the rotation: it is zero to machine precision, because ' +
+          'rotations preserve length. $R$ literally receives identical inputs before and after.<br><br>' +
+          '<strong>Rotation mixes the components.</strong> The matrix on the right is $D^{(l)}(g)$, ' +
+          'and it is dense. The $m$ panels do not each rotate on their own — they turn into linear ' +
+          'combinations of one another. That is what it means for the $2\\ell+1$ numbers to be one ' +
+          'geometric object rather than $2\\ell+1$ separate features, and it is why the ' +
+          'self-interaction layer is allowed to mix channels within a degree but never across ' +
+          'degrees.<br><br>' +
+          '<strong>Blank panels are real.</strong> At some slice azimuths a component vanishes ' +
+          'identically, because that harmonic is odd in the direction perpendicular to the slice. ' +
+          'Sweep the azimuth and it comes back. The information is in the full three-dimensional ' +
+          'field, not in any one plane through it.' })),
+
+      h('h2', {}, 'What the constraint costs'),
+      h('p', { class: 'prose', html:
+        'It is fair to ask what is given up. A general filter $\\mathbb{R}^3 \\to \\mathbb{R}$ can ' +
+        'be any function of three numbers. The constrained one is a product of a function of one ' +
+        'number with a fixed basis of $2\\ell+1$ angular patterns. That is a genuine restriction — ' +
+        'but a much smaller one than it looks, because the network does not use a single filter. It ' +
+        'uses one radial function per $(\\ell_o, \\ell_f, \\ell_i)$ path and per channel, and sums ' +
+        'over $\\ell_f$ up to $\\ell_{\\max}$. Summing products of radial functions with harmonics ' +
+        'across degrees is precisely a spherical-harmonic expansion of an arbitrary filter, so in ' +
+        'the limit $\\ell_{\\max}\\to\\infty$ nothing is lost at all. Truncating at finite ' +
+        '$\\ell_{\\max}$ is the only real restriction — and chapter 6 is the measurement of what ' +
+        'that truncation costs.' }),
 
       h('h2', {}, 'Watch it run'),
       h('p', { class: 'prose' },
@@ -260,13 +343,13 @@ export default {
       h('h2', {}, 'Stacking blocks, and two things that come free'),
       h('p', { class: 'prose', html:
         'Stack several of these and an atom’s representation reaches further with every layer — ' +
-        'chapter 7 measures exactly how far, and what it costs. Two properties come free from the ' +
+        'chapter 8 measures exactly how far, and what it costs. Two properties come free from the ' +
         'construction. Permutation symmetry, because the message is a <em>sum</em> over ' +
         'neighbours, so relabelling identical atoms changes nothing. Translation symmetry, because ' +
         'only relative displacements $\\vec r_{ij}$ ever enter and the origin is never referenced.' }),
       h('p', { class: 'prose' },
         'That leaves the second equation from the overture — forces as the gradient of the energy ' +
-        'rather than a separate output. It costs one backward pass. Chapter 6 shows what happens ' +
+        'rather than a separate output. It costs one backward pass. Chapter 7 shows what happens ' +
         'to models that skip it, and why that turned into a visible column on the leaderboard.'),
     );
   },

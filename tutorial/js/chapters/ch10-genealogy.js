@@ -58,7 +58,7 @@ const NODES = [
     cite: 'arXiv:2001.11696; Phys. Rev. Lett. 125, 166001 (2020)',
     core: 'Not a potential — the paper that demolished the premise the descriptor era rested on. It constructs explicit pairs of genuinely distinct atomic environments with identical three-body descriptors, and further pairs that are degenerate even at four-body order. Two of the SOAP authors are co-authors: this is the field auditing its own foundational claim.',
     inh: 'The faithfulness methodology from the SOAP paper, which had already exhibited a power-spectrum counterexample and run numerical reconstruction experiments on silicon clusters.',
-    add: 'It converted a suspected weakness into a proved one. Any model of the form E = f(invariant descriptor) must assign degenerate configurations identical energies no matter how expressive f is. Chapter 2 rebuilds one of these counterexamples from scratch and measures exactly where it bites.' },
+    add: 'It converted a suspected weakness into a proved one. Any model of the form E = f(invariant descriptor) must assign degenerate configurations identical energies no matter how expressive f is. Chapter 3 rebuilds one of these counterexamples from scratch and measures exactly where it bites.' },
 
   // ---- invariant graph networks ------------------------------------------
   { id: 'schnet', lane: 'inv', year: 2017, slot: 0, l1: 'SchNet',
@@ -67,7 +67,7 @@ const NODES = [
     cite: 'NeurIPS 2017, arXiv:1706.08566; J. Chem. Phys. 148, 241722 (2018)',
     core: 'Learn the descriptor instead of designing it. Atom features are updated by continuous-filter convolutions whose filters are neural functions of the interatomic distance alone, so the network is invariant by construction and smooth enough to differentiate for forces.',
     inh: 'Gilmer et al.’s message-passing framework, which supplied the message, update and readout vocabulary, and Behler–Parrinello’s atomic-energy sum.',
-    add: 'Learned continuous filters and a force-trainable energy surface. Its blind spot is the one chapter 2 is about: with distances only and no angles, aspirin forces come in at 58.5 meV/Å where an invariant model that does see angles reaches 21.6.' },
+    add: 'Learned continuous filters and a force-trainable energy surface. Its blind spot is the one chapter 3 is about: with distances only and no angles, aspirin forces come in at 58.5 meV/Å where an invariant model that does see angles reaches 21.6.' },
   { id: 'deeppot', lane: 'inv', year: 2018, slot: 0, l1: 'DeepPot-SE',
     name: 'Deep Potential and DeepPot-SE',
     group: 'Linfeng Zhang, Jiequn Han, Han Wang, Roberto Car, Weinan E — Princeton and IAPCM',
@@ -81,7 +81,7 @@ const NODES = [
     cite: 'arXiv:2003.03123, ICLR 2020; successor GemNet arXiv:2106.08903, NeurIPS 2021',
     core: 'Pass messages between directed edges rather than between atoms, so the angle between two bonds enters the update explicitly. Angular information is expanded in spherical Bessel functions and spherical harmonics — genuine directional resolution, still packaged as invariant scalars.',
     inh: 'The message-passing framework from Gilmer et al. and SchNet; the angular symmetry functions of Behler–Parrinello, generalised to a complete orthogonal basis.',
-    add: 'The demonstration that most of SchNet’s gap to the state of the art was missing angular information rather than missing equivariance. Its successor GemNet added quadruplets and reached 9.5 meV/Å on revised MD17 aspirin — better than NequIP at ℓ = 1. That comparison is the caveat chapter 5 has to live with.' },
+    add: 'The demonstration that most of SchNet’s gap to the state of the art was missing angular information rather than missing equivariance. Its successor GemNet added quadruplets and reached 9.5 meV/Å on revised MD17 aspirin — better than NequIP at ℓ = 1. That comparison is the caveat chapter 6 has to live with.' },
   { id: 'm3gnet', lane: 'inv', year: 2022, slot: 0, l1: 'M3GNet',
     name: 'M3GNet',
     group: 'Chi Chen and Shyue Ping Ong — Materials Virtual Lab, UC San Diego',
@@ -125,7 +125,7 @@ const NODES = [
     cite: 'arXiv:1802.08219',
     core: 'The direct architectural parent of NequIP. Features on points in three dimensions are decomposed into SO(3) irreducible representations; filters are constrained to a learnable radial function times a fixed spherical harmonic; input and filter are combined with Clebsch–Gordan coefficients so the output is again a direct sum of irreps.',
     inh: 'Irrep-typed features and the constrained-filter posture from Steerable CNNs; spherical harmonics, Wigner matrices and Clebsch–Gordan coefficients from angular-momentum theory; the continuous-filter point convolution and the self-interaction layer from SchNet.',
-    add: 'The exact factorisation NequIP uses verbatim. Weiler et al.’s 3D Steerable CNNs, five months later, proved that this factorisation is not a modelling choice but the general solution of the equivariance constraint, and contributed the gated nonlinearity NequIP also uses. Chapter 3 rebuilds both pieces in the browser.' },
+    add: 'The exact factorisation NequIP uses verbatim. Weiler et al.’s 3D Steerable CNNs, five months later, proved that this factorisation is not a modelling choice but the general solution of the equivariance constraint, and contributed the gated nonlinearity NequIP also uses. Chapter 4 rebuilds both pieces in the browser.' },
   { id: 'cormorant', lane: 'equi', year: 2019, slot: 1, l1: 'Cormorant',
     name: 'Cormorant — covariant molecular neural networks',
     group: 'Brandon Anderson, Truong-Son Hy, Risi Kondor — University of Chicago',
@@ -146,14 +146,14 @@ const NODES = [
     cite: 'arXiv:2101.03164; Nat. Commun. 13, 2453 (2022)',
     core: 'E(3)-equivariant convolutions over geometric tensors, applied to interatomic potentials, at a moment when nearly every competitive potential used invariant features only. Node features are irreps rather than scalars; the convolution is a Clebsch–Gordan product between neighbour features and spherical harmonics of the interatomic unit vector; energy is a sum of site energies and forces are its analytic gradient.',
     inh: 'TFN for the filter form and the convolution, 3D Steerable CNNs for the gate, e3nn for the primitives, SchNet for the atomic-energy-sum and analytic-force template, DimeNet for the Bessel radial basis. NequIP invents none of the equivariance machinery, and says so.',
-    add: 'Systematic parity, a learnable Bessel radial network, and the empirical result that made the field pivot: an ℓ_max ablation showing large monotone gains, and a data-efficiency claim of up to three orders of magnitude. The honest caveat is that its ℓ = 0 baseline has no angular information at all, so the ablation conflates equivariance with directional resolution — chapter 5 works through exactly this.' },
+    add: 'Systematic parity, a learnable Bessel radial network, and the empirical result that made the field pivot: an ℓ_max ablation showing large monotone gains, and a data-efficiency claim of up to three orders of magnitude. The honest caveat is that its ℓ = 0 baseline has no angular information at all, so the ablation conflates equivariance with directional resolution — chapter 6 works through exactly this.' },
   { id: 'allegro', lane: 'equi', year: 2022, slot: 0, l1: 'Allegro',
     name: 'Allegro',
     group: 'Musaelian, Batzner, Johansson, Sun, Owen, Kornbluth, Kozinsky — Harvard',
     cite: 'arXiv:2204.05249; Nat. Commun. 14, 579 (2023)',
     core: 'Keep NequIP’s equivariant representation and delete message passing entirely. Energy is decomposed over ordered pairs, and every layer for an edge reads only atoms inside one cutoff sphere, so depth no longer grows the receptive field. Many-body correlation is recovered by iterating tensor products within that single environment.',
     inh: 'From NequIP: e3nn irreps, Clebsch–Gordan products, spherical harmonics of interatomic vectors, the learnable Bessel radial network, the site-energy and analytic-force setup, and the codebase itself.',
-    add: 'Strict locality, and with it a parallel cost independent of depth — a hundred million atoms of equivariant molecular dynamics. A single Allegro layer beat every deep message-passing network on QM9, which is direct evidence that depth in NequIP was buying expressivity rather than range. Chapter 7 measures that distinction.' },
+    add: 'Strict locality, and with it a parallel cost independent of depth — a hundred million atoms of equivariant molecular dynamics. A single Allegro layer beat every deep message-passing network on QM9, which is direct evidence that depth in NequIP was buying expressivity rather than range. Chapter 8 measures that distinction.' },
   { id: 'equiformer', lane: 'equi', year: 2022, slot: 1, l1: 'Equiformer',
     name: 'Equiformer',
     group: 'Yi-Lun Liao and Tess Smidt — MIT, Atomic Architects',
@@ -188,7 +188,7 @@ const NODES = [
     cite: 'arXiv:2410.12771 (the OMat24 paper); architecture arXiv:2306.12059',
     core: 'The model that defined the 2024–25 state of the art on discovery and, simultaneously, the cautionary tale of the benchmark. EquiformerV2 trained on OMat24 and fine-tuned on sAlex and MPtrj, with a direct force head rather than an energy gradient.',
     inh: 'The Equiformer and eSCN transformer branch entire, plus the OMat24 corpus the same paper introduced.',
-    add: 'F1 of 0.917 — still ninth best on the board — alongside κ_SRME of 1.771 against a worst possible value of 2.0. Its failure is what the Combined Performance Score was invented to catch, and what motivated eSEN, Orb-v3’s conservative variant and EquiformerV3’s move to gradient forces. Chapter 6 measures the mechanism, and finds it is smoothness as much as conservativeness.' },
+    add: 'F1 of 0.917 — still ninth best on the board — alongside κ_SRME of 1.771 against a worst possible value of 2.0. Its failure is what the Combined Performance Score was invented to catch, and what motivated eSEN, Orb-v3’s conservative variant and EquiformerV3’s move to gradient forces. Chapter 7 measures the mechanism, and finds it is smoothness as much as conservativeness.' },
   { id: 'nequipoam', lane: 'equi', year: 2025, slot: 0, l1: 'NequIP-OAM', l2: 'XL', board: true, rank: 9,
     name: 'Nequip-OAM-XL',
     group: 'MIR Group, Harvard (Boris Kozinsky), with Cambridge and Mirian Technologies',
@@ -269,7 +269,7 @@ const NODES = [
     cite: 'arXiv:2504.06231; Orb-v2 arXiv:2410.22570',
     core: 'A graph network simulator with attention, pretrained as a denoising diffusion model over structures and then fine-tuned on energies, forces and stresses. No spherical harmonics, no irreps, no tensor products; rotational invariance is learned from augmentation. Orb-v3 treats equivariance, conservatism and graph sparsity as three traversable axes of a Pareto surface rather than as requirements.',
     inh: 'The learned-simulator line from DeepMind rather than any equivariant lineage; MPtrj, Alexandria and OMat24 as labels; the conservative-force formulation from the tradition it otherwise argues against.',
-    add: 'The clearest before-and-after on the board: an explicitly conservative head and an unlimited-neighbour graph cut κ_SRME from Orb-v2’s 1.734 to 0.210 within one architecture family. That is chapter 6’s thesis, run as a controlled experiment by the people least motivated to prove it.' },
+    add: 'The clearest before-and-after on the board: an explicitly conservative head and an unlimited-neighbour graph cut κ_SRME from Orb-v2’s 1.734 to 0.210 within one architecture family. That is chapter 7’s thesis, run as a controlled experiment by the people least motivated to prove it.' },
   { id: 'petoam', lane: 'unc', year: 2026, slot: 0, l1: 'PET-OAM-XL', board: true, rank: 5,
     name: 'PET-OAM-XL',
     group: 'Bigi, Pegolo, Mazitov, Schmidt, Ceriotti — COSMO, EPFL',
@@ -354,7 +354,7 @@ const BOARD = [
   { rank: 14, name: 'ORB v3',                org: 'Orbital Materials',       set: 'MP+Alex+OMat', f1: 0.905, k: 0.2102, rmsd: 0.0750, cps: 0.861, lin: 'unc', e3nn: false, note: 'unconstrained, diffusion-pretrained' },
   { rank: 15, name: 'Allegro-OAM-L',         org: 'MIR Group, Harvard',      set: 'OAM',    f1: 0.895, k: 0.3186, rmsd: 0.0651, cps: 0.840, lin: 'equi', e3nn: true,  note: 'NequIP with message passing deleted' },
   { rank: 16, name: 'DPA-4.0.1-Pro-MPtrj',   org: 'AISI Beijing / PKU',      set: 'MPtrj',  f1: 0.857, k: 0.2114, rmsd: 0.0687, cps: 0.840, lin: 'inv',  e3nn: false, note: 'DeepPot-SE line plus eSCN SO(2)' },
-  { rank: 36, name: 'eqV2 M',                org: 'FAIR at Meta',            set: 'OAM',    f1: 0.917, k: 1.7707, rmsd: 0.0691, cps: 0.558, lin: 'equi', e3nn: true,  note: 'direct forces — see chapter 6' },
+  { rank: 36, name: 'eqV2 M',                org: 'FAIR at Meta',            set: 'OAM',    f1: 0.917, k: 1.7707, rmsd: 0.0691, cps: 0.558, lin: 'equi', e3nn: true,  note: 'direct forces — see chapter 7' },
 ];
 
 // The MPtrj-only control track: data frozen at 1,580,395 structures, with only
@@ -559,7 +559,7 @@ export default {
 
     // ---- prose ------------------------------------------------------------
     root.append(
-      h('p', { class: 'eyebrow syn' }, 'Chapter 9'),
+      h('p', { class: 'eyebrow syn' }, 'Chapter 10'),
       h('h1', {}, 'The genealogy, and where it lands'),
       h('p', { class: 'lede' },
         'Eight chapters have argued one idea from first principles. This one asks where the idea ' +
@@ -893,7 +893,7 @@ export default {
         'representation theory. Every model in the top fifteen now derives its forces as an ' +
         'analytic gradient; the two famous direct-force models sit at rank 36 and below despite ' +
         'excellent F1. Smoothness of the potential — envelopes, no hard neighbour caps, no grid ' +
-        'discontinuities — turns out to matter as much as the symmetry group, and chapter 6 ' +
+        'discontinuities — turns out to matter as much as the symmetry group, and chapter 7 ' +
         'measures why while also showing that conservativeness alone is neither necessary nor ' +
         'sufficient. Add training-corpus diversity, and add the kernel engineering that lets a ' +
         '45M-parameter model take second place, and you have most of what actually differs ' +

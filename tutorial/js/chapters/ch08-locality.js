@@ -162,7 +162,7 @@ export default {
     const last = DV.configs[DV.configs.length - 1];
 
     root.append(
-      h('p', { class: 'eyebrow geo' }, 'Chapter 7'),
+      h('p', { class: 'eyebrow geo' }, 'Chapter 8'),
       h('h1', {}, 'How far does locality reach'),
       h('p', { class: 'lede' },
         'Depth is the only way a message-passing network acquires reach. One interaction layer ' +
@@ -639,7 +639,7 @@ export default {
         `anisotropy of this environment until it carried $\\ell = 4$ features, and there is no ` +
         `chemistry in that number — it is a fact about the octahedron. This is the argument for ` +
         `keeping features on edges rather than on shells, which is what NequIP and Allegro both ` +
-        `do, and it rhymes with chapter 2: what an aggregation destroys depends on the symmetry ` +
+        `do, and it rhymes with chapter 3: what an aggregation destroys depends on the symmetry ` +
         `of the thing being aggregated, and a crystal is exactly the case where that symmetry is ` +
         `maximal.` }),
 

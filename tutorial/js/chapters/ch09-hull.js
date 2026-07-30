@@ -195,7 +195,7 @@ export default {
 
     // ------------------------------------------------------------------
     root.append(
-      h('p', { class: 'eyebrow dat' }, 'Chapter 8'),
+      h('p', { class: 'eyebrow dat' }, 'Chapter 9'),
       h('h1', {}, 'Stability is a decision, not a regression'),
       h('p', { class: 'lede' },
         'Every model in the previous seven chapters was measured in meV per atom. The benchmark ' +
@@ -817,7 +817,7 @@ export default {
           `conservative and scores 1.7167, essentially the same as ${eq.model}; ORB-v3’s ` +
           `direct-force variant scores 0.348. The quantity that actually matters is the accuracy ` +
           `of the <em>second</em> derivatives of the energy surface, which direct-force training ` +
-          `does not constrain and which a conservative model can also get wrong. Chapter 6 takes ` +
+          `does not constrain and which a conservative model can also get wrong. Chapter 7 takes ` +
           `that mechanism apart.` })),
       h('p', { class: 'prose' },
         'Which brings the argument back to where the reading group started. They asked for F1 ' +

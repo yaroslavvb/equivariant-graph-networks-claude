@@ -34,7 +34,7 @@ export default {
           'accurate interatomic potentials</em></a> — the NequIP paper — and to the lineage that ' +
           'runs from it to the current ' +
           '<a href="https://matbench-discovery.materialsproject.org/">Matbench Discovery</a> ' +
-          'leaderboard. Nine chapters, each with a toy you can break.' })),
+          'leaderboard. Eleven chapters, each with a toy you can break.' })),
 
       h('h2', {}, 'The setup, in one paragraph'),
       h('p', { class: 'prose' },
@@ -49,23 +49,27 @@ export default {
       h('p', { class: 'prose' },
         'The first equation says the total energy is a sum of local atomic contributions — an idea ' +
         'from Behler and Parrinello in 2007 that every model in this story still uses. The second ' +
-        'says forces are the gradient of that energy rather than a separate prediction. Chapter 6 ' +
+        'says forces are the gradient of that energy rather than a separate prediction. Chapter 7 ' +
         'is about what goes wrong when you ignore the second equation, and it is the reason two ' +
-        'models with identical force errors can behave completely differently in a simulation.'),
+        'models with identical force errors can behave completely differently in a simulation. ' +
+        'Chapter 1 unpacks the modelling problem properly: what the training labels actually ' +
+        'are, why the obvious approach of just running the physics is unavailable, and which ' +
+        'constraints the problem forces on any solution.'),
 
       h('h2', {}, 'Where the tutorial goes'),
       h('div', { class: 'grid3' },
-        h('div', { class: 'card geo' }, h('h4', {}, 'Chapters 1–4'),
-          h('p', {}, 'The geometry. What symmetry demands of an energy model, what invariant ' +
-            'descriptors throw away, and the machinery — spherical harmonics, Wigner matrices, ' +
+        h('div', { class: 'card geo' }, h('h4', {}, 'Chapters 1–5'),
+          h('p', {}, 'The problem and the geometry. What is actually being modelled and why a ' +
+            'surrogate is needed at all; what symmetry demands of an energy model; what invariant ' +
+            'descriptors throw away; and the machinery — spherical harmonics, Wigner matrices, ' +
             'Clebsch–Gordan couplings — assembled into one NequIP layer. Derived in your browser, ' +
             'not tabulated.')),
-        h('div', { class: 'card dat' }, h('h4', {}, 'Chapters 5–8'),
+        h('div', { class: 'card dat' }, h('h4', {}, 'Chapters 6–9'),
           h('p', {}, 'The consequences, each a toy experiment with a Python twin in this ' +
             'repository: the $\\ell_{\\max}$ ablation, conservative versus direct forces, how far ' +
             'locality reaches, and why crystal stability is a decision problem rather than a ' +
             'regression problem.')),
-        h('div', { class: 'card syn' }, h('h4', {}, 'Chapter 9'),
+        h('div', { class: 'card syn' }, h('h4', {}, 'Chapter 10'),
           h('p', {}, 'The genealogy: an interactive family tree from Behler–Parrinello through ' +
             'Tensor Field Networks and NequIP to the models sitting at the top of Matbench ' +
             'Discovery right now, with what each one actually contributed.'))),

@@ -22,9 +22,14 @@ out — see [the meeting notes](reports/04-meeting-notes.md).
 ## Start here
 
 - **[The clickable tutorial](https://yaroslavvb.github.io/equivariant-graph-networks-claude/tutorial/)** —
-  ten chapters, arrow keys or click to move. Rotate a molecule and watch the equivariance residual;
+  eleven chapters, arrow keys or click to move. Rotate a molecule and watch the equivariance residual;
   derive the Clebsch–Gordan couplings in your browser; break a network by choosing the obvious
   nonlinearity; drag noise onto a convex hull and watch F1 collapse while MAE barely moves.
+- **[The convolution filter, factorised](https://yaroslavvb.github.io/equivariant-graph-networks-claude/interactive/filter-explorer.html)**
+  — a standalone explorer for the one constraint the whole architecture rests on:
+  $S^{(l)}_{m}(\vec r_{ij}) = R(\lVert\vec r_{ij}\rVert)\,Y^{(l)}_{m}(\hat r_{ij})$. Drag the
+  radial function anywhere you like and the equivariance residual stays at machine precision; let the
+  radial part peek at direction and it breaks at once.
 - **[The genealogy of an idea](reports/02-genealogy.md)** — the centrepiece. Five braided strands
   and where they land.
 - **[Reading the leaderboard](reports/03-leaderboard.md)** — what Matbench Discovery measures, and
@@ -95,7 +100,7 @@ Or sweep everything at once — every check ledger plus a shape check on the ES 
 ```
 
 which currently reports **219/219 PASS** across `e3.py` and the seven experiment scripts, and
-`ALL MODULES OK` for the ten tutorial chapters.
+`ALL MODULES OK` for the eleven tutorial chapters.
 
 To read the tutorial locally it must be served over HTTP, because the chapters `fetch` their data:
 
@@ -125,6 +130,8 @@ then open `http://localhost:8731/tutorial/`.
 - `results/` — JSON written by those scripts; the tutorial reads these
 - `tutorial/` — the clickable tutorial: `index.html`, `js/chapters/*.js`, and
   [`selftest.html`](tutorial/selftest.html)
+- `interactive/` — standalone demos, currently the
+  [filter explorer](interactive/filter-explorer.html)
 - `reports/` — the written report suite
 
 ---

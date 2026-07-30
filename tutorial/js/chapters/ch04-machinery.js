@@ -11,7 +11,7 @@ export default {
   title: 'Building the machinery',
   render(root) {
     root.append(
-      h('p', { class: 'eyebrow geo' }, 'Chapter 3'),
+      h('p', { class: 'eyebrow geo' }, 'Chapter 4'),
       h('h1', {}, 'Building the machinery'),
       h('p', { class: 'lede' },
         'Three objects turn “respect rotations” into something you can put in a network: ' +
@@ -39,7 +39,7 @@ export default {
         'The map from a unit vector $\\hat{r}$ to the degree-$\\ell$ block is the real spherical ' +
         'harmonic $Y_\\ell(\\hat{r}) \\in \\mathbb{R}^{2\\ell+1}$. This is how a bond direction ' +
         'enters the network. Drag a direction and watch each degree respond — $\\ell=0$ ignores ' +
-        'it entirely, which is precisely the blindness of chapter 2.'),
+        'it entirely, which is precisely the blindness of chapter 3.'),
     );
 
     // ---- SH explorer ----------------------------------------------------
@@ -84,7 +84,7 @@ export default {
                  `   <span class="dim">|Y| = ${norm(Y).toFixed(6)}</span>`;
         }).join('\n') +
         `\n\n<span class="dim">|Y_l| is constant on the sphere — the norm is invariant, the ` +
-        `components are not. That is exactly the split chapter 2 exploited.</span>`;
+        `components are not. That is exactly the split chapter 3 exploited.</span>`;
     }
     shDemo.append(shCanvas,
       h('div', { class: 'controls' },
@@ -293,7 +293,7 @@ export default {
       h('p', { class: 'prose' },
         'A way to turn a bond direction into features of every degree; a way to say exactly how ' +
         'each degree turns; and a complete, forced list of the ways two features may be ' +
-        'multiplied. That is the entire toolkit. Chapter 4 assembles it into a layer.'),
+        'multiplied. That is the entire toolkit. Chapter 5 assembles it into a layer.'),
     );
   },
 };

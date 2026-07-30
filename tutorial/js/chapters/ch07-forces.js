@@ -319,7 +319,7 @@ export default {
     const relForceErr = M.direct.rmse_test_clean / D.data.force_rms;
 
     root.append(
-      h('p', { class: 'eyebrow dat' }, 'Chapter 6'),
+      h('p', { class: 'eyebrow dat' }, 'Chapter 7'),
       h('h1', {}, 'Forces from a gradient'),
       h('p', { class: 'lede' },
         `Two force fields, fitted to the same data on the same equivariant features, both ` +

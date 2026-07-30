@@ -9,7 +9,14 @@
 // browser console, and await the promise.
 
 (async () => {
-  const ids = ['question', 'symmetry', 'blindness', 'machinery', 'layer',
+  // Geometry checks are meaningless when the pane is hidden: innerWidth reads 0,
+  // every box measures 0x0, and a perfectly good figure looks broken.
+  if (!window.innerWidth) {
+    console.warn('viewport reports zero width — the browser pane is hidden. ' +
+      'Geometry checks would all false-positive; show the pane and re-run.');
+    return { skipped: true };
+  }
+  const ids = ['question', 'problem', 'symmetry', 'blindness', 'machinery', 'layer',
                'lmax', 'forces', 'locality', 'hull', 'genealogy'];
   const rows = [];
   for (const id of ids) {

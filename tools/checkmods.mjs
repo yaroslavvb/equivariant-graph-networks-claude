@@ -4,7 +4,7 @@ import fs from 'fs';
 const base = process.argv[2];
 const domish = (m) => /document is not defined|window is not defined|fetch failed|is not defined/.test(m);
 let bad = 0;
-const IDS = ['question','symmetry','blindness','machinery','layer','lmax','forces','locality','hull','genealogy'];
+const IDS = ['question','problem','symmetry','blindness','machinery','layer','lmax','forces','locality','hull','genealogy'];
 const seen = [];
 for (const f of ['ui','e3','linalg','app']) {
   try { await import(`${base}/tutorial/js/${f}.js`); }

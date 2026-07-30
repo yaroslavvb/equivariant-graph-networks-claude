@@ -1,17 +1,18 @@
 // Tutorial shell: chapter registry, routing, keyboard navigation, shared helpers.
 
 import ch00 from './chapters/ch00-question.js';
-import ch01 from './chapters/ch01-symmetry.js';
-import ch02 from './chapters/ch02-blindness.js';
-import ch03 from './chapters/ch03-machinery.js';
-import ch04 from './chapters/ch04-layer.js';
-import ch05 from './chapters/ch05-lmax.js';
-import ch06 from './chapters/ch06-forces.js';
-import ch07 from './chapters/ch07-locality.js';
-import ch08 from './chapters/ch08-hull.js';
-import ch09 from './chapters/ch09-genealogy.js';
+import ch01 from './chapters/ch01-problem.js';
+import ch02 from './chapters/ch02-symmetry.js';
+import ch03 from './chapters/ch03-blindness.js';
+import ch04 from './chapters/ch04-machinery.js';
+import ch05 from './chapters/ch05-layer.js';
+import ch06 from './chapters/ch06-lmax.js';
+import ch07 from './chapters/ch07-forces.js';
+import ch08 from './chapters/ch08-locality.js';
+import ch09 from './chapters/ch09-hull.js';
+import ch10 from './chapters/ch10-genealogy.js';
 
-const CHAPTERS = [ch00, ch01, ch02, ch03, ch04, ch05, ch06, ch07, ch08, ch09];
+const CHAPTERS = [ch00, ch01, ch02, ch03, ch04, ch05, ch06, ch07, ch08, ch09, ch10];
 
 const tocList = document.getElementById('tocList');
 const stage = document.getElementById('stage');

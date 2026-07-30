@@ -89,7 +89,7 @@ export default {
     const withinPct = Math.abs(100 * (noiseRatio2 - 1));
 
     root.append(
-      h('p', { class: 'eyebrow geo' }, 'Chapter 5'),
+      h('p', { class: 'eyebrow geo' }, 'Chapter 6'),
       h('h1', {}, 'The ℓ-max ablation'),
       h('p', { class: 'lede' },
         'This is NequIP’s central causal experiment: raise the maximum tensor rank of the ' +
@@ -624,7 +624,7 @@ export default {
         'Whether the first step or the third is the big one depends on where the target’s ' +
         'angular spectrum actually lives, so the honest form of the claim is conditional: raise ' +
         '$\\ell_{\\max}$ until you reach the angular complexity of your target, and not past it. ' +
-        'Chapter 9 returns to this, because the descriptor tradition solved the same problem by ' +
+        'Chapter 10 returns to this, because the descriptor tradition solved the same problem by ' +
         'choosing the body order in advance, and several models near the top of today’s ' +
         'leaderboard came down that road instead.' }));
   },
