@@ -4,6 +4,7 @@ import {
 } from '../e3.js';
 import { matvec, norm } from '../linalg.js';
 import { filterExplorer } from '../filter-explorer.js';
+import { pathExplorer } from '../path-explorer.js';
 
 // A fixed toy molecule: a central atom with five neighbours inside the cutoff.
 const R_CUT = 2.6;
@@ -233,6 +234,118 @@ export default {
         'the limit $\\ell_{\\max}\\to\\infty$ nothing is lost at all. Truncating at finite ' +
         '$\\ell_{\\max}$ is the only real restriction — and chapter 6 is the measurement of what ' +
         'that truncation costs.' }),
+    );
+
+    // ---- equation 8, in full ------------------------------------------------
+    root.append(
+      h('h2', {}, 'Equation 8, index by index'),
+      h('p', { class: 'prose', html:
+        'The filter of equation 4 is only half a layer. Equation 8 of the paper is the whole ' +
+        'convolution — the thing that actually consumes neighbour features and produces new ones — ' +
+        'and it is where the notation gets forbidding. It carries six superscripts and five indices, ' +
+        'and it is worth taking apart slowly, because every one of them is doing a job.' }),
+      h('div', { class: 'prose', style: { textAlign: 'center', margin: '1.3em 0', overflowX: 'auto' } },
+        '$$\\mathcal{L}^{(l_o,\\,p_o,\\,l_f,\\,l_i,\\,p_f,\\,p_i)}_{a\\,c\\,m_o}\\!\\left(\\vec r_a,\\, ' +
+        'V^{(l_i,p_i)}_{a\\,c\\,m_i}\\right) \\;=\\; ' +
+        '\\sum_{m_f,\\,m_i} C^{(l_o,m_o)}_{(l_i,m_i)(l_f,m_f)} ' +
+        '\\sum_{b\\,\\in\\,S} R^{(l_f,\\,l_i,\\,p_f,\\,p_i)}_{c}\\!\\left(r_{ab}\\right)\\, ' +
+        'Y^{(l_f)}_{m_f}\\!\\left(\\hat r_{ab}\\right)\\, V^{(l_i,p_i)}_{b\\,c\\,m_i}$$'),
+
+      h('h3', {}, 'Read it from the inside out'),
+      h('p', { class: 'prose', html:
+        'Start at the far right with $V^{(l_i,p_i)}_{b\\,c\\,m_i}$ — the existing feature sitting on ' +
+        'neighbour $b$, in channel $c$, component $m_i$, of degree $l_i$ and parity $p_i$. Multiply ' +
+        'it by two things evaluated on the bond from $a$ to $b$: the spherical harmonic ' +
+        '$Y^{(l_f)}_{m_f}(\\hat r_{ab})$ of the bond direction, and the learnable radial function ' +
+        '$R_c(r_{ab})$ of the bond length. That product is exactly the filter from equation 4, now ' +
+        'applied to a neighbour’s feature rather than standing alone.' }),
+      h('p', { class: 'prose', html:
+        'Then $\\sum_{b \\in S}$ gathers over the neighbour set. This is the message-passing step, ' +
+        'and being a <em>sum</em> rather than a concatenation is what makes the layer indifferent to ' +
+        'the order neighbours happen to be stored in — permutation symmetry, obtained for free.' }),
+      h('p', { class: 'prose', html:
+        'Finally $\\sum_{m_f, m_i} C^{(l_o,m_o)}_{(l_i,m_i)(l_f,m_f)}$ contracts the filter’s ' +
+        'angular index against the feature’s angular index and deposits the result at output ' +
+        'component $m_o$. Those are the Clebsch–Gordan coefficients chapter 4 derived, and chapter 4 ' +
+        'is also why there is no freedom here: the coupling of degree $l_i$ with degree $l_f$ into ' +
+        'degree $l_o$ is unique up to scale, so once the degrees are chosen the numbers are ' +
+        'determined. $m_f$ and $m_i$ are summed away; $m_o$ is left free and indexes the output.' }),
+
+      h('div', { class: 'note geo' },
+        h('span', { class: 'tag' }, 'The index that is easiest to miss'),
+        h('div', { html:
+          'Look at $c$. It appears on the input $V_{b\\,c\\,m_i}$, on the radial function $R_c$, and ' +
+          'on the output $\\mathcal{L}_{a\\,c\\,m_o}$ — and it is <strong>never summed over</strong>. ' +
+          'The convolution does not mix channels at all. Each channel is carried through with its ' +
+          'own private radial function, exactly like a depthwise convolution in an ordinary CNN, and ' +
+          'all channel mixing is deferred to the cheap atom-wise linear layer that follows. That is a ' +
+          'deliberate cost decision: a channel-mixing tensor product would cost a factor of the ' +
+          'channel count more, and the separable form loses very little because the linear layer ' +
+          'recovers the mixing immediately afterwards.' })),
+
+      h('h3', {}, 'What the six superscripts are for'),
+      h('p', { class: 'prose', html:
+        'A layer does not compute one of these. It computes one for every combination of ' +
+        '$(l_i, p_i)$ input, $l_f$ filter and $(l_o, p_o)$ output that the selection rules allow, ' +
+        'and sums the results into the output features. Each such combination is called a ' +
+        '<em>path</em>, and — this is the important part — <strong>each path gets its own learnable ' +
+        'radial function</strong>, which is what the superscripts on $R^{(l_f, l_i, p_f, p_i)}_c$ are ' +
+        'recording. The parameter count of the layer is essentially the number of paths times the ' +
+        'number of channels times the size of the little radial network.' }),
+      h('p', { class: 'prose', html:
+        'Which paths survive is fixed by two rules and no taste at all. The triangle rule from ' +
+        'chapter 4, $|l_i - l_f| \\le l_o \\le l_i + l_f$, and equation 7’s parity rule, ' +
+        '$p_o = p_i\\,p_f$. And $p_f$ is not free either: the filter’s angular part is a degree-$l_f$ ' +
+        'spherical harmonic, whose parity is $(-1)^{l_f}$. So the whole path structure follows from ' +
+        'choosing $\\ell_{\\max}$ and which parities to carry. Enumerate them:' }),
+    );
+
+    const paths = h('div', { class: 'demo' });
+    paths.append(
+      h('h3', {}, 'Every interaction path equation 8 allows'),
+      h('p', { class: 'hint' },
+        'Rows are input irreps, columns are filter degrees, cells are the outputs the rules permit. ' +
+        'Click any cell to build that path’s coupling and verify it. Notation: 1o is a vector ' +
+        '(odd under inversion), 1e a pseudovector.'),
+      pathExplorer());
+    root.append(paths);
+
+    root.append(
+      h('p', { class: 'prose', html:
+        'Two things are worth noticing in that table. The path count grows quickly with ' +
+        '$\\ell_{\\max}$ — which is the real cost of raising it, and the reason chapter 6’s ablation ' +
+        'is not free accuracy. And every cell you click reports $\\sigma_2$ of order one, meaning the ' +
+        'coupling for that path is unique: there is exactly one way to combine those two degrees ' +
+        'into that output, so the only thing left to learn is <em>how much</em> of it to use. That ' +
+        'scalar amount is the radial function, evaluated at the bond length.' }),
+
+      h('div', { class: 'note' },
+        h('span', { class: 'tag' }, 'Where this came from, and where it went'),
+        h('div', { html:
+          'Equation 8 is the Tensor Field Network convolution of Thomas et al. (2018), ' +
+          '<a href="https://arxiv.org/abs/1802.08219">arXiv:1802.08219</a>, with two additions: ' +
+          'parity is tracked explicitly through $p_i, p_f, p_o$, and the radial function is indexed ' +
+          'per path and per channel rather than shared. NequIP’s contribution at this equation is ' +
+          'less the form than the demonstration of what it buys on interatomic potentials.<br><br>' +
+          'It is also the layer’s bottleneck. The double sum over $m_f, m_i$ for every path scales ' +
+          'steeply in $\\ell_{\\max}$, which is what made higher degrees expensive and what eSCN ' +
+          '(<a href="https://arxiv.org/abs/2302.03655">arXiv:2302.03655</a>) later attacked by ' +
+          'rotating each edge into a frame where the harmonic collapses to its $m = 0$ component and ' +
+          'most of the Clebsch–Gordan matrix becomes zero. Chapter 10 follows that thread — it is ' +
+          'how the transformer branch reached $\\ell = 6$ at practical cost.' })),
+
+      h('h3', {}, 'What breaks if you change any of it'),
+      h('p', { class: 'prose', html:
+        'The quickest way to see that equation 8 is derived rather than designed is to try removing ' +
+        'pieces. Replace $\\sum_b$ with a concatenation and permutation symmetry dies. Let $R$ take ' +
+        '$\\vec r_{ab}$ instead of $r_{ab}$ and rotation equivariance dies — that is the slider in ' +
+        'the explorer above. Replace $C$ with a learned tensor and equivariance dies unless the ' +
+        'learned tensor happens to land on the one-dimensional invariant subspace, which training ' +
+        'will not do. Drop the parity index and $1o \\otimes 1o \\to 1o$ becomes reachable, letting ' +
+        'the network build a pseudovector where a vector belongs and quietly breaking reflection ' +
+        'symmetry. Sum over $c$ and the layer still works but costs a factor of the channel count ' +
+        'more for very little gain. Of the whole equation, essentially the only free choices are ' +
+        '$\\ell_{\\max}$, the number of channels, and the shape of the little network inside $R$.' }),
 
       h('h2', {}, 'Watch it run'),
       h('p', { class: 'prose' },
